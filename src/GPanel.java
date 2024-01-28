@@ -158,6 +158,7 @@ public void scrollRectToVisible(Rectangle arg0) {
             }
 
             //Two body analytics
+            //comment
             if(twoBodyAnalytics){
                 if(!(firstBody == secondBody)){
                     distance = (double) Math.sqrt(Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocx() - physicsSim.getPhysicsList().get(secondBody).getLocx()), 2) + Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocy() - physicsSim.getPhysicsList().get(secondBody).getLocy()), 2));
