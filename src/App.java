@@ -18,7 +18,7 @@ public class App {
     double leftover = 0;
     int ticksPerFrame = 10;
     JFrame frame = new JFrame();
-    Physics physicsSim = new Physics(10000, 10000);
+    Physics physicsSim = new Physics(10000, 100);
     GPanel gamePanel = new GPanel(physicsSim, frame);
     MPanel menuPanel = new MPanel(physicsSim, gamePanel);
     JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
@@ -91,6 +91,7 @@ public class App {
         physicsSim.getPhysicsList().add(new GravBody(0, 30290, -147100000, 0, 5972, 6372, false, Color.BLUE)); //earth
         physicsSim.getPhysicsList().add(new GravBody(1022, 30290, -147100000, 405000, 73,1737, false, Color.GRAY)); //moon
         physicsSim.getPhysicsList().add(new GravBody(0, -26500, 206650000, 0, 642,3389, false, Color.RED)); //mars
+        physicsSim.getPhysicsList().add(new GravBody(13720, 0, 0, 740959000, 1898130, 69911, false, Color.ORANGE)); //jupiter
 
         // physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 500, false, Color.BLACK));
         // physicsSim.getPhysicsList().add(new GravBody(0, 1000, 50000, 0, 1, 100, false, Color.BLUE));

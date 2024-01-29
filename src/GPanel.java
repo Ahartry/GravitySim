@@ -1,6 +1,8 @@
 import javax.swing.JPanel;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.Action;
@@ -63,8 +65,11 @@ public void scrollRectToVisible(Rectangle arg0) {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void paintComponent(Graphics g1) {
+        super.paintComponent(g1);
+
+        Graphics2D g = (Graphics2D) g1;
+        g.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
 
         //iterates through all the objects to draw them
         for(int i = 0; i < physicsSim.getPhysicsList().size(); i++){
