@@ -29,6 +29,8 @@ public class MPanel extends JPanel{
     Action twoBodyAnalyticsAction;
     Action removeApsisAction;
     Action trailDrawAction;
+    Action increaseScaleAction;
+    Action decreaseScaleAction;
 
     GButton newButton;
     GButton editButton;

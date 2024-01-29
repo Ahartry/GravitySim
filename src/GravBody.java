@@ -36,6 +36,8 @@ public class GravBody {
     boolean fixed;
 
     double orbitalEnergy;
+    
+    boolean orbitCompleted = false;
 
     Color color;
 

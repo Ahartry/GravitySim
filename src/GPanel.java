@@ -53,6 +53,7 @@ public void scrollRectToVisible(Rectangle arg0) {
     double velocity;
     double semimajorAxis;
     double gm;
+    int radiusScalar = 1;
 
     private ArrayList<Trail> trailList = new ArrayList<>();
     private ArrayList<Apside> apsideList = new ArrayList<>();
@@ -69,11 +70,11 @@ public void scrollRectToVisible(Rectangle arg0) {
         super.paintComponent(g1);
 
         Graphics2D g = (Graphics2D) g1;
-        g.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+        //g.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
 
         //iterates through all the objects to draw them
         for(int i = 0; i < physicsSim.getPhysicsList().size(); i++){
-            double radius = physicsSim.getPhysicsList().get(i).getRadius();
+            double radius = physicsSim.getPhysicsList().get(i).getRadius() * radiusScalar;;
 
             //case for colour 'randomization'
             g.setColor(physicsSim.getPhysicsList().get(i).color);
