@@ -69,6 +69,8 @@ public class MPanel extends JPanel{
         this.twoBodyAnalyticsAction = new twoBodyAnalyticsAction();
         this.removeApsisAction = new removeApsisAction();
         this.trailDrawAction = new trailDrawAction();
+        this.increaseScaleAction = new increaseScaleAction();
+        this.decreaseScaleAction = new decreaseScaleAction();
 
         //adds the buttons
         this.newButton = new GButton("New");
@@ -126,6 +128,12 @@ public class MPanel extends JPanel{
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('t'), "trailDrawAction");
         this.getActionMap().put("trailDrawAction", trailDrawAction);
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "increaseScaleAction");
+        this.getActionMap().put("increaseScaleAction", increaseScaleAction);
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), "decreaseScaleAction");
+        this.getActionMap().put("decreaseScaleAction", decreaseScaleAction);
 
 
         //sets up the buttons
@@ -389,6 +397,22 @@ public class MPanel extends JPanel{
         @Override
         public void actionPerformed(ActionEvent arg0){
             gpanel.setTrailDrawMode(!gpanel.getTrailDrawMode());
+        }
+    }
+
+    public class increaseScaleAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent arg0){
+            gpanel.increaseScale();
+        }
+    }
+
+    public class decreaseScaleAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent arg0){
+            gpanel.decreaseScale();
         }
     }
 

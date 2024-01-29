@@ -74,7 +74,9 @@ public void scrollRectToVisible(Rectangle arg0) {
 
         //iterates through all the objects to draw them
         for(int i = 0; i < physicsSim.getPhysicsList().size(); i++){
-            double radius = physicsSim.getPhysicsList().get(i).getRadius() * radiusScalar;;
+
+            //I need to add logarithmic scaling so that the sun doesn't need to be massive for the other planets to be visible
+            double radius = physicsSim.getPhysicsList().get(i).getRadius() * radiusScalar;
 
             //case for colour 'randomization'
             g.setColor(physicsSim.getPhysicsList().get(i).color);
@@ -95,7 +97,7 @@ public void scrollRectToVisible(Rectangle arg0) {
             ydraw = (physicsSim.getPhysicsList().get(i).getLocy() - radius) / zoom + (double) offsety;
 
             //draws the bodies
-            g.fillOval((int) xdraw, (int) ydraw, (int) (radius * 2) / (int) zoom, (int) (radius * 2) / (int) zoom);
+            g.fillOval((int) xdraw, (int) ydraw, (int) ((radius * 2) /  zoom), (int) ((radius * 2) /  zoom));
 
             firstTrailLoop = true;
             //draws the trail
@@ -305,6 +307,17 @@ public void scrollRectToVisible(Rectangle arg0) {
 
     public void setTrailDrawMode(boolean x){
         this.trailDrawMode = x;
+    }
+
+    public void increaseScale(){
+        radiusScalar = radiusScalar * 2;
+        System.out.println(radiusScalar);
+    }
+
+    public void decreaseScale(){
+        if(radiusScalar != 1){
+            radiusScalar = radiusScalar / 2;
+        }
     }
 
     public void twoBodyAnalysis(){
