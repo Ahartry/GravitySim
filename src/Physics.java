@@ -20,6 +20,7 @@ public class Physics {
     private double orbitalEnergy;
 
     ArrayList<GravBody> physicsList = new ArrayList<>();
+    private GPanel gpanel;
     private long ticksPerFrame;
     private double leftover = 0;
     private int physicsSpeed;
@@ -38,11 +39,12 @@ public class Physics {
         leftover = f - loopTimes;
 
         if(!paused){
-            //increments time
-            timePassed = timePassed + (physicsSpeed);
 
             for(int i = 0; i < (loopTimes * ticksPerFrame); i++){
                 //actualy physics part of loop
+
+                //increments time
+                timePassed = timePassed + (physicsSpeed / ticksPerFrame);
     
                 //iterates through each object of the list
                 for(int i1 = 0; i1 < physicsList.size(); i1++){
@@ -113,6 +115,8 @@ public class Physics {
                     }
     
                 }
+
+                gpanel.twoBodyAnalysis();
     
             }
         }
@@ -141,6 +145,10 @@ public class Physics {
 
     public double getOrbitalEnergy(){
         return this.orbitalEnergy;
+    }
+
+    public void setGPanel(GPanel panel){
+        this.gpanel = panel;
     }
 }
 

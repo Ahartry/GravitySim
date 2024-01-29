@@ -18,7 +18,7 @@ public class App {
     double leftover = 0;
     int ticksPerFrame = 10;
     JFrame frame = new JFrame();
-    Physics physicsSim = new Physics(10000, 1);
+    Physics physicsSim = new Physics(10000, 10000);
     GPanel gamePanel = new GPanel(physicsSim, frame);
     MPanel menuPanel = new MPanel(physicsSim, gamePanel);
     JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
@@ -37,6 +37,8 @@ public class App {
     boolean selectedSoFar = false;
 
     public void run(){
+
+        physicsSim.setGPanel(gamePanel);
         
         //makes the basic variables and stuff
 
