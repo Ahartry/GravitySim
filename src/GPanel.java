@@ -3,6 +3,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.Action;
@@ -29,7 +32,7 @@ public void scrollRectToVisible(Rectangle arg0) {
     int offsety;
     double zoom = 1000;
     int j = 0;
-    int trailLimit = 100000;
+    int trailLimit = 1000000;
     JFrame frame;
     int objectFocus = 0;
     int objectSelected = 0;
@@ -76,6 +79,7 @@ public void scrollRectToVisible(Rectangle arg0) {
         for(int i = 0; i < physicsSim.getPhysicsList().size(); i++){
 
             //I need to add logarithmic scaling so that the sun doesn't need to be massive for the other planets to be visible
+            //double radius = 100000000 * Math.log(physicsSim.getPhysicsList().get(i).getRadius() * radiusScalar);
             double radius = physicsSim.getPhysicsList().get(i).getRadius() * radiusScalar;
 
             //case for colour 'randomization'
@@ -382,28 +386,40 @@ public void scrollRectToVisible(Rectangle arg0) {
     }
 
 
-    //I do not know how this works, it was written by chatGPT
-    private void drawTransparentRing(Graphics g, GravBody b) {
+    private void drawTransparentRing(Graphics g1, GravBody b) {
+
+        Graphics2D g = (Graphics2D) g1;
         int centerX = (int) (b.getLocx() / getZoom() + getOffsetx());
         int centerY = (int) (b.getLocy() / getZoom() + getOffsety());
-        int ringWidth = 2; // Adjust the ring width as needed
+        int ringWidth = 1; // Adjust the ring width as needed
 
         int outerRadius = (int) (b.getRadius() / zoom + 10);
         int innerRadius = outerRadius - ringWidth;
 
-        g.setColor(Color.BLUE); // Set the color of the ring
+        // g.setColor(Color.BLUE); // Set the color of the ring
 
-        // Draw outer oval
-        g.drawOval(centerX - outerRadius, centerY - outerRadius, 2 * outerRadius, 2 * outerRadius);
+        // // Draw outer oval
+        // g.drawOval(centerX - outerRadius, centerY - outerRadius, 2 * outerRadius, 2 * outerRadius);
 
-        // Set XOR mode to make the inner oval transparent
-        g.setXORMode(getBackground());
+        // // Set XOR mode to make the inner oval transparent
+        // g.setXORMode(getBackground());
 
-        // Draw inner oval
-        g.drawOval(centerX - innerRadius, centerY - innerRadius, 2 * innerRadius, 2 * innerRadius);
+        // // Draw inner oval
+        // g.drawOval(centerX - innerRadius, centerY - innerRadius, 2 * innerRadius, 2 * innerRadius);
 
-        // Reset the XOR mode
-        g.setPaintMode();
+        // // Reset the XOR mode
+        // g.setPaintMode();
+
+        Shape outer = new Ellipse2D.Double(centerX - (outerRadius), centerY - (outerRadius), outerRadius * 2, outerRadius * 2);
+        Shape inner = new Ellipse2D.Double(centerX - (innerRadius), centerY - (innerRadius), innerRadius * 2, innerRadius * 2);
+
+        Area circle = new Area( outer );
+        circle.subtract( new Area(inner) );
+
+        g.setColor(Color.BLUE);
+        g.fill(circle);
+        // g.setColor(Color.BLACK);
+        // g.draw(circle);
     }
 }
 

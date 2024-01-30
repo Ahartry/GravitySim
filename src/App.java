@@ -84,8 +84,8 @@ public class App {
 
         //mass is in e21kg, radius is km, velocity is m/s, loc is in km
 
-        //here is the inner solar system
-        physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1988500000, 695700, false, Color.YELLOW)); //sun
+        //here is the solar system
+        physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW)); //sun
         physicsSim.getPhysicsList().add(new GravBody(-58980, 0, 0, -46000000, 330, 2440, false, Color.LIGHT_GRAY)); //mercury
         physicsSim.getPhysicsList().add(new GravBody(34790, 0, 0, 108940000, 4868, 6052, false, Color.ORANGE)); //venus
         physicsSim.getPhysicsList().add(new GravBody(0, 30290, -147100000, 0, 5972, 6372, false, Color.BLUE)); //earth
@@ -93,6 +93,8 @@ public class App {
         physicsSim.getPhysicsList().add(new GravBody(0, -26500, 206650000, 0, 642,3389, false, Color.RED)); //mars
         physicsSim.getPhysicsList().add(new GravBody(13720, 0, 0, 740959000, 1898130, 69911, false, Color.ORANGE)); //jupiter
         physicsSim.getPhysicsList().add(new GravBody(-9140, 0, 0, -1506527000, 568320, 58232, false, Color.YELLOW)); //saturn
+        physicsSim.getPhysicsList().add(new GravBody(0, 7130, -2732696000d, 0, 86811, 25362, false, Color.CYAN)); //uranus
+        physicsSim.getPhysicsList().add(new GravBody(0, -5370, 4558857000d, 0, 102409, 24622, false, Color.BLUE)); // neptune
 
         // physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 500, false, Color.BLACK));
         // physicsSim.getPhysicsList().add(new GravBody(0, 1000, 50000, 0, 1, 100, false, Color.BLUE));
