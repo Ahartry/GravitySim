@@ -313,15 +313,12 @@ public void scrollRectToVisible(Rectangle arg0) {
         this.trailDrawMode = x;
     }
 
-    public void increaseScale(){
-        radiusScalar = radiusScalar * 2;
-        System.out.println(radiusScalar);
+    public void increaseSpeed(){
+        physicsSim.setSpeed(physicsSim.getSpeed() * 2);
     }
 
-    public void decreaseScale(){
-        if(radiusScalar != 1){
-            radiusScalar = radiusScalar / 2;
-        }
+    public void decreaseSpeed(){
+        physicsSim.setSpeed((int) (physicsSim.getSpeed() / 2));
     }
 
     public void twoBodyAnalysis(){

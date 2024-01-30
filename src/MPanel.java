@@ -29,8 +29,8 @@ public class MPanel extends JPanel{
     Action twoBodyAnalyticsAction;
     Action removeApsisAction;
     Action trailDrawAction;
-    Action increaseScaleAction;
-    Action decreaseScaleAction;
+    Action increaseSpeedAction;
+    Action decreaseSpeedAction;
 
     GButton newButton;
     GButton editButton;
@@ -69,8 +69,8 @@ public class MPanel extends JPanel{
         this.twoBodyAnalyticsAction = new twoBodyAnalyticsAction();
         this.removeApsisAction = new removeApsisAction();
         this.trailDrawAction = new trailDrawAction();
-        this.increaseScaleAction = new increaseScaleAction();
-        this.decreaseScaleAction = new decreaseScaleAction();
+        this.increaseSpeedAction = new increaseSpeedAction();
+        this.decreaseSpeedAction = new decreaseSpeedAction();
 
         //adds the buttons
         this.newButton = new GButton("New");
@@ -129,11 +129,11 @@ public class MPanel extends JPanel{
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('t'), "trailDrawAction");
         this.getActionMap().put("trailDrawAction", trailDrawAction);
 
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "increaseScaleAction");
-        this.getActionMap().put("increaseScaleAction", increaseScaleAction);
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "increaseSpeedAction");
+        this.getActionMap().put("increaseSpeedAction", increaseSpeedAction);
 
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), "decreaseScaleAction");
-        this.getActionMap().put("decreaseScaleAction", decreaseScaleAction);
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), "decreaseSpeedAction");
+        this.getActionMap().put("decreaseSpeedAction", decreaseSpeedAction);
 
 
         //sets up the buttons
@@ -400,19 +400,19 @@ public class MPanel extends JPanel{
         }
     }
 
-    public class increaseScaleAction extends AbstractAction{
+    public class increaseSpeedAction extends AbstractAction{
 
         @Override
         public void actionPerformed(ActionEvent arg0){
-            gpanel.increaseScale();
+            gpanel.increaseSpeed();
         }
     }
 
-    public class decreaseScaleAction extends AbstractAction{
+    public class decreaseSpeedAction extends AbstractAction{
 
         @Override
         public void actionPerformed(ActionEvent arg0){
-            gpanel.decreaseScale();
+            gpanel.decreaseSpeed();
         }
     }
 

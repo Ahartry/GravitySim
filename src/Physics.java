@@ -150,5 +150,13 @@ public class Physics {
     public void setGPanel(GPanel panel){
         this.gpanel = panel;
     }
+
+    public void setSpeed(int x){
+        physicsSpeed = x;
+    }
+
+    public int getSpeed(){
+        return physicsSpeed;
+    }
 }
 

@@ -18,7 +18,7 @@ public class App {
     double leftover = 0;
     int ticksPerFrame = 10;
     JFrame frame = new JFrame();
-    Physics physicsSim = new Physics(100000, 1000);
+    Physics physicsSim = new Physics(131072, 1000);
     GPanel gamePanel = new GPanel(physicsSim, frame);
     MPanel menuPanel = new MPanel(physicsSim, gamePanel);
     JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
@@ -113,7 +113,7 @@ public class App {
             gamePanel.repaint();
             if(!gamePanel.getShowControls() == showControls){
                 if(gamePanel.getShowControls()){
-                    controlText.setText("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'<BR>Switch trail draw mode: 't'</html>");
+                    controlText.setText("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'<BR>Switch trail draw mode: 't'<BR>Increase speed: UP<BR>Decrease speed: DOWN</html>");
                 }else{
                     controlText.setText("Press '1' to show controls");
                 }
