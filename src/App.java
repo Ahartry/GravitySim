@@ -18,7 +18,7 @@ public class App {
     double leftover = 0;
     int ticksPerFrame = 10;
     JFrame frame = new JFrame();
-    Physics physicsSim = new Physics(131072, 1000);
+    Physics physicsSim = new Physics(512, 1000);
     GPanel gamePanel = new GPanel(physicsSim, frame);
     MPanel menuPanel = new MPanel(physicsSim, gamePanel);
     JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
@@ -84,17 +84,20 @@ public class App {
 
         //mass is in e21kg, radius is km, velocity is m/s, loc is in km
 
+        physicsSim.getPhysicsList().add(new GravBody(0,0, 0, 0, 100, 100, false, Color.BLACK));
+        physicsSim.getPhysicsList().add(new GravBody(500,0, 0, 20000, 1, 100, false, Color.BLACK));
+
         //here is the solar system
-        physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW)); //sun
-        physicsSim.getPhysicsList().add(new GravBody(-58980, 0, 0, -46000000, 330, 2440, false, Color.LIGHT_GRAY)); //mercury
-        physicsSim.getPhysicsList().add(new GravBody(34790, 0, 0, 108940000, 4868, 6052, false, Color.ORANGE)); //venus
-        physicsSim.getPhysicsList().add(new GravBody(0, 30290, -147100000, 0, 5972, 6372, false, Color.BLUE)); //earth
-        physicsSim.getPhysicsList().add(new GravBody(1022, 30290, -147100000, 405000, 73,1737, false, Color.GRAY)); //moon
-        physicsSim.getPhysicsList().add(new GravBody(0, -26500, 206650000, 0, 642,3389, false, Color.RED)); //mars
-        physicsSim.getPhysicsList().add(new GravBody(13720, 0, 0, 740959000, 1898130, 69911, false, Color.ORANGE)); //jupiter
-        physicsSim.getPhysicsList().add(new GravBody(-9140, 0, 0, -1506527000, 568320, 58232, false, Color.YELLOW)); //saturn
-        physicsSim.getPhysicsList().add(new GravBody(0, 7130, -2732696000d, 0, 86811, 25362, false, Color.CYAN)); //uranus
-        physicsSim.getPhysicsList().add(new GravBody(0, -5370, 4558857000d, 0, 102409, 24622, false, Color.BLUE)); // neptune
+        // physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW)); //sun
+        // physicsSim.getPhysicsList().add(new GravBody(-58980, 0, 0, -46000000, 330, 2440, false, Color.LIGHT_GRAY)); //mercury
+        // physicsSim.getPhysicsList().add(new GravBody(34790, 0, 0, 108940000, 4868, 6052, false, Color.ORANGE)); //venus
+        // physicsSim.getPhysicsList().add(new GravBody(0, 30290, -147100000, 0, 5972, 6372, false, Color.BLUE)); //earth
+        // physicsSim.getPhysicsList().add(new GravBody(1022, 30290, -147100000, 405000, 73,1737, false, Color.GRAY)); //moon
+        // physicsSim.getPhysicsList().add(new GravBody(0, -26500, 206650000, 0, 642,3389, false, Color.RED)); //mars
+        // physicsSim.getPhysicsList().add(new GravBody(13720, 0, 0, 740959000, 1898130, 69911, false, Color.ORANGE)); //jupiter
+        // physicsSim.getPhysicsList().add(new GravBody(-9140, 0, 0, -1506527000, 568320, 58232, false, Color.YELLOW)); //saturn
+        // physicsSim.getPhysicsList().add(new GravBody(0, 7130, -2732696000d, 0, 86811, 25362, false, Color.CYAN)); //uranus
+        // physicsSim.getPhysicsList().add(new GravBody(0, -5370, 4558857000d, 0, 102409, 24622, false, Color.BLUE)); // neptune
 
         // physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 500, false, Color.BLACK));
         // physicsSim.getPhysicsList().add(new GravBody(0, 1000, 50000, 0, 1, 100, false, Color.BLUE));

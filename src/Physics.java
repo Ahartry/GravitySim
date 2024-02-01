@@ -94,8 +94,8 @@ public class Physics {
                             }
     
                             //applies the acceleration to the speed
-                            physicsList.get(i1).setVelx(velx + (accelx * (physicsSpeed / ticksPerFrame)));
-                            physicsList.get(i1).setVely(vely + (accely * (physicsSpeed / ticksPerFrame)));
+                            physicsList.get(i1).setVelx(velx + (accelx * (double) ((double) physicsSpeed / (double) ticksPerFrame)));
+                            physicsList.get(i1).setVely(vely + (accely * (double) ((double) physicsSpeed / (double) ticksPerFrame)));
     
                             velx = physicsList.get(i1).getVelx();
                             vely = physicsList.get(i1).getVely();
@@ -110,8 +110,8 @@ public class Physics {
                     if(physicsList.get(i1).getFixed()){
     
                     }else{
-                        physicsList.get(i1).setLocx(physicsList.get(i1).getLocx() + physicsList.get(i1).getVelx() * (double) (physicsSpeed / ticksPerFrame));
-                        physicsList.get(i1).setLocy(physicsList.get(i1).getLocy() + physicsList.get(i1).getVely() * (double) (physicsSpeed / ticksPerFrame));
+                        physicsList.get(i1).setLocx(physicsList.get(i1).getLocx() + physicsList.get(i1).getVelx() * (double) ((double) physicsSpeed / (double) ticksPerFrame));
+                        physicsList.get(i1).setLocy(physicsList.get(i1).getLocy() + physicsList.get(i1).getVely() * (double) ((double) physicsSpeed / (double) ticksPerFrame));
                     }
     
                 }
