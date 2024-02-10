@@ -18,7 +18,7 @@ public class App {
     double leftover = 0;
     int ticksPerFrame = 10;
     JFrame frame = new JFrame();
-    Physics physicsSim = new Physics(512, 1000);
+    Physics physicsSim = new Physics(4, 8192);
     GPanel gamePanel = new GPanel(physicsSim, frame);
     MPanel menuPanel = new MPanel(physicsSim, gamePanel);
     JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
@@ -84,8 +84,8 @@ public class App {
 
         //mass is in e21kg, radius is km, velocity is m/s, loc is in km
 
-        physicsSim.getPhysicsList().add(new GravBody(0,0, 0, 0, 100, 100, false, Color.BLACK));
-        physicsSim.getPhysicsList().add(new GravBody(500,0, 0, 20000, 1, 100, false, Color.BLACK));
+        physicsSim.getPhysicsList().add(new GravBody(0,0, 0, 0, 100, 1000, false, Color.BLACK));
+        physicsSim.getPhysicsList().add(new GravBody(500,0, 0, 20000, 1, 500, false, Color.RED));
 
         //here is the solar system
         // physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW)); //sun

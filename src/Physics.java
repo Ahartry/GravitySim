@@ -44,7 +44,7 @@ public class Physics {
                 //actualy physics part of loop
 
                 //increments time
-                timePassed = timePassed + (physicsSpeed / ticksPerFrame);
+                timePassed = timePassed + (double) ((double) physicsSpeed / (double) ticksPerFrame);
     
                 //iterates through each object of the list
                 for(int i1 = 0; i1 < physicsList.size(); i1++){
