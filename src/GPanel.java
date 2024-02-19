@@ -57,6 +57,9 @@ public void scrollRectToVisible(Rectangle arg0) {
     double semimajorAxis;
     double gm;
     int radiusScalar = 1;
+    double realTime;
+    double predictedTime;
+    double timeDifference;
 
     private ArrayList<Trail> trailList = new ArrayList<>();
     private ArrayList<Apside> apsideList = new ArrayList<>();
@@ -343,8 +346,9 @@ public void scrollRectToVisible(Rectangle arg0) {
                 if(ascending && !ascended){
                     distancePeri = distance;
                     apsideList.add(new Apside(physicsSim.getPhysicsList().get(firstBody).getLocx(), physicsSim.getPhysicsList().get(firstBody).getLocy(), false, distance));
-                    System.out.println("Periapsis Reached, altitude: " + distance);
-                    System.out.println("Time: " + (physicsSim.getTimePassed() - lastPeri) /* (60 * 60 * 24) */);
+                    //System.out.println("Periapsis Reached, altitude: " + distance);
+                    realTime = physicsSim.getTimePassed() - lastPeri;
+                    System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
 
                     //finds the semi-major axis through black magic (This most likely does not work)
                     gm = 67384.1 * (physicsSim.getPhysicsList().get(firstBody).getMass() + physicsSim.getPhysicsList().get(secondBody).getMass());
@@ -352,9 +356,12 @@ public void scrollRectToVisible(Rectangle arg0) {
                     semimajorAxis = -1 * gm / (2 * orbitalEnergy);
                     semimajorAxis = (distanceApo + distancePeri) / 2;
 
-                    //semimajorAxis = 40536772.03;
+                    predictedTime = 2 * Math.PI * Math.sqrt(Math.pow(semimajorAxis, 3) / gm);
 
-                    System.out.println("Time should be: " + (2 * Math.PI * Math.sqrt(Math.pow(semimajorAxis, 3) / gm)));
+                    timeDifference = ((predictedTime - realTime) / ((predictedTime + realTime) / 2)) * 100;
+
+                    System.out.println("Time should be: " + predictedTime);
+                    System.out.println("Percentage difference: " + timeDifference + "%\n");
                     //System.out.println("Semi-major Axis: " + semimajorAxis);
                     //System.out.println("Semi-major Axis scuffed: " + (distanceApo + distancePeri) / 2);
 
