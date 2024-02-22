@@ -10,6 +10,7 @@ Future features will include:
 - Ability to add/edit new celestial bodies
 - Custom startup file
 - Save planetary systems
+- Change frame of reference
 
 Features that have been added:
 - Adjustable speed
