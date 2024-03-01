@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 public class Physics {
@@ -47,7 +51,7 @@ public class Physics {
     }
 
 
-    public void tick(long delta){
+    public void tick(long delta, BufferedWriter writer) throws IOException{
         //acounts for the leftover time
         double f = (delta / (double) 16666666) + leftover;
         int loopTimes = (int) f;
@@ -103,8 +107,8 @@ public class Physics {
     
                                 //removed 15 orders of magnitude from G to account for lower mass values
                                 //does the actual physics acceleration math
-                                accelx = (double) (Math.cos(theta) * (67384.1 * mass2 / (hypSquared))) * signx;
-                                accely = (double) (Math.sin(theta) * (67384.1 * mass2 / (hypSquared))) * signy;
+                                accelx = (double) (Math.cos(theta) * (66743 * mass2 / (hypSquared))) * signx;
+                                accely = (double) (Math.sin(theta) * (66743 * mass2 / (hypSquared))) * signy;
     
                             }
     
@@ -153,20 +157,25 @@ public class Physics {
                     apsideList.add(new Apside(physicsList.get(0).getLocx(), physicsList.get(0).getLocy(), false, distance));
                     //System.out.println("Periapsis Reached, altitude: " + distance);
                     realTime = getTimePassed() - lastPeri;
-                    System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
+                    //System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
 
                     //finds the semi-major axis through black magic (This most likely does not work)
-                    gm = 67384.1 * (physicsList.get(0).getMass() + physicsList.get(1).getMass());
-                    orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
-                    semimajorAxis = -1 * gm / (2 * orbitalEnergy);
+                    gm = 66743 * (physicsList.get(0).getMass() + physicsList.get(1).getMass());
+                    System.out.println(gm);
+                    //orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
+                    //semimajorAxis = -1 * gm / (2 * orbitalEnergy);
                     semimajorAxis = (distanceApo + distancePeri) / 2;
+                    //System.out.println(Double.toString(semimajorAxis));
+                    writer.write(Double.toString(semimajorAxis) + "\n");
+                    writer.write(Double.toString(realTime) + "\n\n");
+                    writer.flush();
 
                     predictedTime = 2 * Math.PI * Math.sqrt(Math.pow(semimajorAxis, 3) / gm);
 
                     timeDifference = ((predictedTime - realTime) / ((predictedTime + realTime) / 2)) * 100;
 
-                    System.out.println("Time should be: " + predictedTime);
-                    System.out.println("Percentage difference: " + timeDifference + "%\n");
+                    //System.out.println("Time should be: " + predictedTime);
+                    //System.out.println("Percentage difference: " + timeDifference + "%\n");
                     //System.out.println("Semi-major Axis: " + semimajorAxis);
                     //System.out.println("Semi-major Axis scuffed: " + (distanceApo + distancePeri) / 2);
 

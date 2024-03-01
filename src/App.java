@@ -11,6 +11,10 @@ import java.awt.Color;
 // import java.awt.event.MouseMotionListener;
 // import java.awt.event.MouseWheelEvent;
 // import javax.swing.JLabel;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class App {
 
@@ -18,7 +22,7 @@ public class App {
     double leftover = 0;
     int ticksPerFrame = 10;
     //JFrame frame = new JFrame();
-    Physics physicsSim = new Physics(4, 32000);
+    Physics physicsSim = new Physics(64, 32000);
     //GPanel gamePanel = new GPanel(physicsSim, frame);
     //MPanel menuPanel = new MPanel(physicsSim, gamePanel);
     //JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
@@ -36,7 +40,11 @@ public class App {
     boolean showControls;
     boolean selectedSoFar = false;
 
-    public void run(){
+    public void run() throws IOException{
+
+        BufferedWriter writer = null;
+        File file = new File("output.txt");
+        writer = new BufferedWriter(new FileWriter(file));
 
         //physicsSim.setGPanel(gamePanel);
         
@@ -84,8 +92,19 @@ public class App {
 
         //mass is in e21kg, radius is km, velocity is m/s, loc is in km
 
-        physicsSim.getPhysicsList().add(new GravBody(0,0, 0, 0, 100, 1000, false, Color.BLACK));
-        physicsSim.getPhysicsList().add(new GravBody(500,0, 0, 20000, 1, 500, false, Color.RED));
+        physicsSim.getPhysicsList().add(new GravBody(0,0, 0, 0, 201, 1000, false, Color.BLACK));
+        physicsSim.getPhysicsList().add(new GravBody(500,0, 0, 9151.5118768248, 1, 500, false, Color.RED));
+
+        //values for location:
+        //8435.7486251 for 5k sma
+        //9151.5118768248 for 5k sma x2 GSP
+        //14589.3553358 for 10k sma (1.00001216 * predicted)
+        //19276.5667 for 15k sma
+        //22965.73825 for 20k sma (1.00001914 * predicted)
+        //25944.9645 for 25k sma
+        //28401.1883 for 30k sma (1.00002358 * predicted)
+        //30461 for 35k sma
+        //32213.25 for 40k sma (1.000026783 * predicted)
 
         //here is the solar system
         // physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW)); //sun
@@ -112,7 +131,7 @@ public class App {
 
             //System.out.println(deltaTime);
             //does the gameloop
-            physicsSim.tick(deltaTime);
+            physicsSim.tick(deltaTime, writer);
             // gamePanel.repaint();
             // if(!gamePanel.getShowControls() == showControls){
             //     if(gamePanel.getShowControls()){
@@ -133,6 +152,7 @@ public class App {
             }
 
         }
+        
         
     }
 
