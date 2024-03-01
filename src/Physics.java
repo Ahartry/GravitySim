@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 public class Physics {
@@ -18,6 +22,21 @@ public class Physics {
     private boolean paused = false;
     private double timePassed = 0;
     private double orbitalEnergy;
+    boolean ascending;
+    boolean ascended;
+    double distance;
+    double distance2;
+    double distanceApo;
+    double distancePeri;
+    double lastPeri = 0;
+    double velocity;
+    double semimajorAxis;
+    double gm;
+    int radiusScalar = 1;
+    double realTime;
+    double predictedTime;
+    double timeDifference;
+    ArrayList<Apside> apsideList = new ArrayList<>();
 
     ArrayList<GravBody> physicsList = new ArrayList<>();
     private GPanel gpanel;
@@ -32,7 +51,7 @@ public class Physics {
     }
 
 
-    public void tick(long delta){
+    public void tick(long delta, BufferedWriter writer) throws IOException{
         //acounts for the leftover time
         double f = (delta / (double) 16666666) + leftover;
         int loopTimes = (int) f;
@@ -44,7 +63,7 @@ public class Physics {
                 //actualy physics part of loop
 
                 //increments time
-                timePassed = timePassed + (physicsSpeed / ticksPerFrame);
+                timePassed = timePassed + (double) ((double) physicsSpeed / (double) ticksPerFrame);
     
                 //iterates through each object of the list
                 for(int i1 = 0; i1 < physicsList.size(); i1++){
@@ -88,14 +107,14 @@ public class Physics {
     
                                 //removed 15 orders of magnitude from G to account for lower mass values
                                 //does the actual physics acceleration math
-                                accelx = (double) (Math.cos(theta) * (67384.1 * mass2 / (hypSquared))) * signx;
-                                accely = (double) (Math.sin(theta) * (67384.1 * mass2 / (hypSquared))) * signy;
+                                accelx = (double) (Math.cos(theta) * (66743 * mass2 / (hypSquared))) * signx;
+                                accely = (double) (Math.sin(theta) * (66743 * mass2 / (hypSquared))) * signy;
     
                             }
     
                             //applies the acceleration to the speed
-                            physicsList.get(i1).setVelx(velx + (accelx * (physicsSpeed / ticksPerFrame)));
-                            physicsList.get(i1).setVely(vely + (accely * (physicsSpeed / ticksPerFrame)));
+                            physicsList.get(i1).setVelx(velx + (accelx * (double) ((double) physicsSpeed / (double) ticksPerFrame)));
+                            physicsList.get(i1).setVely(vely + (accely * (double) ((double) physicsSpeed / (double) ticksPerFrame)));
     
                             velx = physicsList.get(i1).getVelx();
                             vely = physicsList.get(i1).getVely();
@@ -110,13 +129,71 @@ public class Physics {
                     if(physicsList.get(i1).getFixed()){
     
                     }else{
-                        physicsList.get(i1).setLocx(physicsList.get(i1).getLocx() + physicsList.get(i1).getVelx() * (double) (physicsSpeed / ticksPerFrame));
-                        physicsList.get(i1).setLocy(physicsList.get(i1).getLocy() + physicsList.get(i1).getVely() * (double) (physicsSpeed / ticksPerFrame));
+                        physicsList.get(i1).setLocx(physicsList.get(i1).getLocx() + physicsList.get(i1).getVelx() * (double) ((double) physicsSpeed / (double) ticksPerFrame));
+                        physicsList.get(i1).setLocy(physicsList.get(i1).getLocy() + physicsList.get(i1).getVely() * (double) ((double) physicsSpeed / (double) ticksPerFrame));
                     }
     
                 }
 
-                gpanel.twoBodyAnalysis();
+                //two body analysis
+                distance = (double) Math.sqrt(Math.pow((double) (physicsList.get(0).getLocx() - physicsList.get(1).getLocx()), 2) + Math.pow((double) (physicsList.get(0).getLocy() - physicsList.get(1).getLocy()), 2));
+                velocity = Math.sqrt(Math.pow(physicsList.get(0).getVelx(), 2) + Math.pow(physicsList.get(0).getVely(), 2));
+
+                if(distance > distance2){
+                    ascending = true;
+                }else if(distance < distance2){
+                    ascending = false;
+                }
+
+                //make the first loop work right
+                // if(firstLoopThing){
+                //     ascended = ascending;
+                //     firstLoopThing = false;
+                // }
+
+                //does the stuff
+                if(ascending && !ascended){
+                    distancePeri = distance;
+                    apsideList.add(new Apside(physicsList.get(0).getLocx(), physicsList.get(0).getLocy(), false, distance));
+                    //System.out.println("Periapsis Reached, altitude: " + distance);
+                    realTime = getTimePassed() - lastPeri;
+                    //System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
+
+                    //finds the semi-major axis through black magic (This most likely does not work)
+                    gm = 66743 * (physicsList.get(0).getMass() + physicsList.get(1).getMass());
+                    System.out.println(gm);
+                    //orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
+                    //semimajorAxis = -1 * gm / (2 * orbitalEnergy);
+                    semimajorAxis = (distanceApo + distancePeri) / 2;
+                    //System.out.println(Double.toString(semimajorAxis));
+                    writer.write(Double.toString(semimajorAxis) + "\n");
+                    writer.write(Double.toString(realTime) + "\n\n");
+                    writer.flush();
+
+                    predictedTime = 2 * Math.PI * Math.sqrt(Math.pow(semimajorAxis, 3) / gm);
+
+                    timeDifference = ((predictedTime - realTime) / ((predictedTime + realTime) / 2)) * 100;
+
+                    //System.out.println("Time should be: " + predictedTime);
+                    //System.out.println("Percentage difference: " + timeDifference + "%\n");
+                    //System.out.println("Semi-major Axis: " + semimajorAxis);
+                    //System.out.println("Semi-major Axis scuffed: " + (distanceApo + distancePeri) / 2);
+
+                    lastPeri = getTimePassed();
+
+                }else if(!ascending && ascended){
+                    distanceApo = distance;
+                    apsideList.add(new Apside(physicsList.get(0).getLocx(), physicsList.get(0).getLocy(), true, distance));
+                    //System.out.println("Apoapsis Reached, altitude: " + distance);
+                }
+
+                if(ascending){
+                    ascended = true;
+                }else{
+                    ascended = false;
+                }
+
+                distance2 = (double) Math.sqrt(Math.pow((double) (physicsList.get(0).getLocx() - physicsList.get(1).getLocx()), 2) + Math.pow((double) (physicsList.get(0).getLocy() - physicsList.get(1).getLocy()), 2));
     
             }
         }
