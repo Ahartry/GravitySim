@@ -1,7 +1,3 @@
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 
 public class Physics {
@@ -36,7 +32,6 @@ public class Physics {
     double realTime;
     double predictedTime;
     double timeDifference;
-    ArrayList<Apside> apsideList = new ArrayList<>();
 
     ArrayList<GravBody> physicsList = new ArrayList<>();
     private GPanel gpanel;
@@ -51,7 +46,7 @@ public class Physics {
     }
 
 
-    public void tick(long delta, BufferedWriter writer) throws IOException{
+    public void tick(long delta){
         //acounts for the leftover time
         double f = (delta / (double) 16666666) + leftover;
         int loopTimes = (int) f;
@@ -136,65 +131,68 @@ public class Physics {
                 }
 
                 //two body analysis
-                distance = (double) Math.sqrt(Math.pow((double) (physicsList.get(0).getLocx() - physicsList.get(1).getLocx()), 2) + Math.pow((double) (physicsList.get(0).getLocy() - physicsList.get(1).getLocy()), 2));
-                velocity = Math.sqrt(Math.pow(physicsList.get(0).getVelx(), 2) + Math.pow(physicsList.get(0).getVely(), 2));
-
-                if(distance > distance2){
-                    ascending = true;
-                }else if(distance < distance2){
-                    ascending = false;
-                }
-
-                //make the first loop work right
-                // if(firstLoopThing){
-                //     ascended = ascending;
-                //     firstLoopThing = false;
-                // }
-
-                //does the stuff
-                if(ascending && !ascended){
-                    distancePeri = distance;
-                    apsideList.add(new Apside(physicsList.get(0).getLocx(), physicsList.get(0).getLocy(), false, distance));
-                    //System.out.println("Periapsis Reached, altitude: " + distance);
-                    realTime = getTimePassed() - lastPeri;
-                    //System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
-
-                    //finds the semi-major axis through black magic (This most likely does not work)
-                    gm = 66743 * (physicsList.get(0).getMass() + physicsList.get(1).getMass());
-                    System.out.println(gm);
-                    //orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
-                    //semimajorAxis = -1 * gm / (2 * orbitalEnergy);
-                    semimajorAxis = (distanceApo + distancePeri) / 2;
-                    //System.out.println(Double.toString(semimajorAxis));
-                    writer.write(Double.toString(semimajorAxis) + "\n");
-                    writer.write(Double.toString(realTime) + "\n\n");
-                    writer.flush();
-
-                    predictedTime = 2 * Math.PI * Math.sqrt(Math.pow(semimajorAxis, 3) / gm);
-
-                    timeDifference = ((predictedTime - realTime) / ((predictedTime + realTime) / 2)) * 100;
-
-                    //System.out.println("Time should be: " + predictedTime);
-                    //System.out.println("Percentage difference: " + timeDifference + "%\n");
-                    //System.out.println("Semi-major Axis: " + semimajorAxis);
-                    //System.out.println("Semi-major Axis scuffed: " + (distanceApo + distancePeri) / 2);
-
-                    lastPeri = getTimePassed();
-
-                }else if(!ascending && ascended){
-                    distanceApo = distance;
-                    apsideList.add(new Apside(physicsList.get(0).getLocx(), physicsList.get(0).getLocy(), true, distance));
-                    //System.out.println("Apoapsis Reached, altitude: " + distance);
-                }
-
-                if(ascending){
-                    ascended = true;
+                //important: First body is the one you want to get stats about. Second is the host. Should be reversed. Yes, I know
+                if(gpanel.getTwoBodyAnalytics()){
+                    if(!(gpanel.getFirstBody() == gpanel.getSecondBody())){
+                        distance = (double) Math.sqrt(Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocx() - physicsList.get(gpanel.getSecondBody()).getLocx()), 2) + Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocy() - physicsList.get(gpanel.getSecondBody()).getLocy()), 2));
+                        velocity = Math.sqrt(Math.pow(physicsList.get(gpanel.getFirstBody()).getVelx(), 2) + Math.pow(physicsList.get(gpanel.getFirstBody()).getVely(), 2));
+        
+                        if(distance > distance2){
+                            ascending = true;
+                        }else if(distance < distance2){
+                            ascending = false;
+                        }
+        
+                        //make the first loop work right
+                        // if(firstLoopThing){
+                        //     ascended = ascending;
+                        //     firstLoopThing = false;
+                        // }
+        
+                        //does the stuff
+                        if(ascending && !ascended){
+                            distancePeri = distance;
+                            gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getFirstBody()).getLocx(), physicsList.get(gpanel.getFirstBody()).getLocy(), false, distance));
+                            //System.out.println("Periapsis Reached, altitude: " + distance);
+                            realTime = getTimePassed() - lastPeri;
+                            //System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
+        
+                            //finds the semi-major axis through black magic (This most likely does not work)
+                            gm = 66743 * (physicsList.get(gpanel.getFirstBody()).getMass() + physicsList.get(gpanel.getSecondBody()).getMass());
+                            //System.out.println(gm);
+                            //orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
+                            //semimajorAxis = -1 * gm / (2 * orbitalEnergy);
+                            semimajorAxis = (distanceApo + distancePeri) / 2;
+                            System.out.println("Period: " + realTime + "s");
+                            System.out.println("Semi-major axis: " + semimajorAxis + "m\n");
+                            // for(int j = 0; j < gpanel.getApsideList().size(); j++){
+                            //     System.out.println(gpanel.getApsideList().get(j).getX());
+                            // }
+                            
+        
+                            lastPeri = getTimePassed();
+        
+                        }else if(!ascending && ascended){
+                            distanceApo = distance;
+                            gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getFirstBody()).getLocx(), physicsList.get(gpanel.getFirstBody()).getLocy(), true, distance));
+                            //System.out.println("Apoapsis Reached, altitude: " + distance);
+                        }
+        
+                        if(ascending){
+                            ascended = true;
+                        }else{
+                            ascended = false;
+                        }
+        
+                        distance2 = (double) Math.sqrt(Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocx() - physicsList.get(gpanel.getSecondBody()).getLocx()), 2) + Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocy() - physicsList.get(gpanel.getSecondBody()).getLocy()), 2));
+                    }
                 }else{
-                    ascended = false;
+                    gpanel.getApsideList().clear();
+                    gpanel.setFirstBody(0);
+                    gpanel.setSecondBody(0);
                 }
-
-                distance2 = (double) Math.sqrt(Math.pow((double) (physicsList.get(0).getLocx() - physicsList.get(1).getLocx()), 2) + Math.pow((double) (physicsList.get(0).getLocy() - physicsList.get(1).getLocy()), 2));
-    
+                
+                
             }
         }
 
