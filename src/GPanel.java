@@ -89,7 +89,7 @@ public void scrollRectToVisible(Rectangle arg0) {
             g.setColor(physicsSim.getPhysicsList().get(i).color);
 
             //checks when to add new trail
-            if(j > 10 && !physicsSim.getPaused()){
+            if(j > 10 && !physicsSim.getPaused() && !physicsSim.getPhysicsList().get(i).getFixed()){
                 trailList.add(new Trail(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), i));
             }
             j++;

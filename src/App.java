@@ -110,7 +110,7 @@ public class App {
         // physicsSim.getPhysicsList().add(new GravBody(0, 7130, -2732696000d, 0, 86811, 25362, false, Color.CYAN)); //uranus
         // physicsSim.getPhysicsList().add(new GravBody(0, -5370, 4558857000d, 0, 102409, 24622, false, Color.BLUE)); // neptune
 
-        physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 500, false, Color.BLACK));
+        physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 500, true, Color.BLACK));
         physicsSim.getPhysicsList().add(new GravBody(0, 1155.94, 50000, 0, 1, 100, false, Color.BLUE));
 
         //physics loop
