@@ -149,17 +149,18 @@ public void scrollRectToVisible(Rectangle arg0) {
     
                 }
             }
-            
 
             //draws the apsides
             for(int index = 0; index < apsideList.size(); index++){
                 xdraw = apsideList.get(index).getX() / zoom + offsetx;
                 ydraw = apsideList.get(index).getY() / zoom + offsety;
 
+                System.out.println(index);
+
                 g.setColor(Color.BLUE);
                 g.fillOval((int) (xdraw - 2.5), (int) (ydraw - 2.5), 5, 5);
             }
-            
+
             //removes old points for trail
             if(trailList.size() > trailLimit){
                 for(int index = 0; index < (trailList.size() - trailLimit); index++){
