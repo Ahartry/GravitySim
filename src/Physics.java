@@ -68,7 +68,7 @@ public class Physics {
                     for(int i2 = 0; i2 < physicsList.size(); i2++){
     
                         //makes sure that it does not check itself and give silly /0 error
-                        if(i1 != i2){
+                        if(i1 != i2 && !physicsList.get(i1).getFixed()){
     
                             velx = physicsList.get(i1).getVelx();
                             vely = physicsList.get(i1).getVely();
