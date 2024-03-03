@@ -31,6 +31,7 @@ public class MPanel extends JPanel{
     Action trailDrawAction;
     Action increaseSpeedAction;
     Action decreaseSpeedAction;
+    Action zToggleAction;
 
     GButton newButton;
     GButton editButton;
@@ -49,7 +50,8 @@ public class MPanel extends JPanel{
     ArrayList<Apside> apsideList = new ArrayList<>();
 
     int buttonWidth = 190;
-    
+    boolean zToggle = false;
+
     public MPanel(Physics p, GPanel g){
         //adds the actions
         this.setLayout(new GridBagLayout());
@@ -71,6 +73,7 @@ public class MPanel extends JPanel{
         this.trailDrawAction = new trailDrawAction();
         this.increaseSpeedAction = new increaseSpeedAction();
         this.decreaseSpeedAction = new decreaseSpeedAction();
+        this.zToggleAction = new zToggleAction();
 
         //adds the buttons
         this.newButton = new GButton("New");
@@ -134,6 +137,9 @@ public class MPanel extends JPanel{
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), "decreaseSpeedAction");
         this.getActionMap().put("decreaseSpeedAction", decreaseSpeedAction);
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('z'), "zToggleAction");
+        this.getActionMap().put("zToggleAction", zToggleAction);
 
 
         //sets up the buttons
@@ -213,7 +219,7 @@ public class MPanel extends JPanel{
     public class editAction extends AbstractAction{
 
         public void actionPerformed(ActionEvent arg0) {
-            // TODO Auto-generated method stub
+            
             throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
         }
         
@@ -416,6 +422,15 @@ public class MPanel extends JPanel{
         }
     }
 
+    public class zToggleAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent arg0){
+            zToggle = !zToggle;
+            System.out.println(zToggle);
+        }
+    }
+
     public void setButtonWidth(int x){
         this.buttonWidth = (x / 6) - 10;
     }
@@ -427,6 +442,10 @@ public class MPanel extends JPanel{
 
     public GButton getFocusButton(){
         return focusButton;
+    }
+
+    public Boolean getZToggle(){
+        return zToggle;
     }
 
 }

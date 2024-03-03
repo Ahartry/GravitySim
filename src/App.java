@@ -36,6 +36,7 @@ public class App {
     int arrayIterator = 0;
     boolean showControls;
     boolean selectedSoFar = false;
+    
 
     public void run() throws IOException{
         physicsSim.setGPanel(gamePanel);
@@ -110,8 +111,8 @@ public class App {
         // physicsSim.getPhysicsList().add(new GravBody(0, 7130, -2732696000d, 0, 86811, 25362, false, Color.CYAN)); //uranus
         // physicsSim.getPhysicsList().add(new GravBody(0, -5370, 4558857000d, 0, 102409, 24622, false, Color.BLUE)); // neptune
 
-        physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 500, true, Color.BLACK));
-        physicsSim.getPhysicsList().add(new GravBody(0, 1155.94, 50000, 0, 1, 100, false, Color.BLUE));
+        physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 5000, true, Color.BLACK));
+        physicsSim.getPhysicsList().add(new GravBody(0, 1155.94, 50000, 0, 1, 1000, false, Color.BLUE));
 
         //physics loop
         startNanoTime = System.nanoTime();
@@ -166,33 +167,47 @@ public class App {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
-            if (e.getWheelRotation() < 0) {
 
-                realx = getRealX(e);
-                realy = getRealY(e);
+            //zToggle is for rotational offset
+            if(menuPanel.getZToggle()){
+                //gamePanel.repaint();
+                if (e.getWheelRotation() < 0) {
+                    gamePanel.setRotationalOffset(gamePanel.getRotationalOffset() - (Math.PI / 20));
+    
+                } else {
+                    gamePanel.setRotationalOffset(gamePanel.getRotationalOffset() + (Math.PI / 20));
+                    
+                }
+            }else{
+                if (e.getWheelRotation() < 0) {
 
-                gamePanel.setZoom(gamePanel.getZoom() * (double) (1 / 1.5));
-
-                diffx = (getRealX(e) - realx);
-                diffy = (getRealY(e) - realy);
-
-                gamePanel.setOffsetx(gamePanel.getOffsetx() + (int) (diffx / gamePanel.getZoom()));
-                gamePanel.setOffsety(gamePanel.getOffsety() + (int) (diffy / gamePanel.getZoom()));
-
-            } else {
-                
-                realx = getRealX(e);
-                realy = getRealY(e);
-
-                gamePanel.setZoom(gamePanel.getZoom() *(1.5));
-
-                diffx = (getRealX(e) - realx);
-                diffy = (getRealY(e) - realy);
-
-                gamePanel.setOffsetx(gamePanel.getOffsetx() + (int) (diffx / gamePanel.getZoom()));
-                gamePanel.setOffsety(gamePanel.getOffsety() + (int) (diffy / gamePanel.getZoom()));
-                
+                    realx = getRealX(e);
+                    realy = getRealY(e);
+    
+                    gamePanel.setZoom(gamePanel.getZoom() * (double) (1 / 1.5));
+    
+                    diffx = (getRealX(e) - realx);
+                    diffy = (getRealY(e) - realy);
+    
+                    gamePanel.setOffsetx(gamePanel.getOffsetx() + (int) (diffx / gamePanel.getZoom()));
+                    gamePanel.setOffsety(gamePanel.getOffsety() + (int) (diffy / gamePanel.getZoom()));
+    
+                } else {
+                    
+                    realx = getRealX(e);
+                    realy = getRealY(e);
+    
+                    gamePanel.setZoom(gamePanel.getZoom() *(1.5));
+    
+                    diffx = (getRealX(e) - realx);
+                    diffy = (getRealY(e) - realy);
+    
+                    gamePanel.setOffsetx(gamePanel.getOffsetx() + (int) (diffx / gamePanel.getZoom()));
+                    gamePanel.setOffsety(gamePanel.getOffsety() + (int) (diffy / gamePanel.getZoom()));
+                    
+                }
             }
+            
         }
 
     }

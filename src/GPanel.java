@@ -2,7 +2,7 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
+//import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
@@ -60,6 +60,7 @@ public void scrollRectToVisible(Rectangle arg0) {
     double realTime;
     double predictedTime;
     double timeDifference;
+    double rotationalOffset = 0;
 
     private ArrayList<Trail> trailList = new ArrayList<>();
     private ArrayList<Apside> apsideList = new ArrayList<>();
@@ -84,8 +85,6 @@ public void scrollRectToVisible(Rectangle arg0) {
             //I need to add logarithmic scaling so that the sun doesn't need to be massive for the other planets to be visible
             //double radius = 100000000 * Math.log(physicsSim.getPhysicsList().get(i).getRadius() * radiusScalar);
             double radius = physicsSim.getPhysicsList().get(i).getRadius() * radiusScalar;
-
-            //case for colour 'randomization'
             g.setColor(physicsSim.getPhysicsList().get(i).color);
 
             //checks when to add new trail
@@ -100,8 +99,8 @@ public void scrollRectToVisible(Rectangle arg0) {
                 setOffsety((int) (physicsSim.getPhysicsList().get(objectFocus).getLocy() / zoom) * -1 + getYDimension() / 2);
             }
 
-            xdraw = (physicsSim.getPhysicsList().get(i).getLocx() - radius) / zoom + (double) offsetx;
-            ydraw = (physicsSim.getPhysicsList().get(i).getLocy() - radius) / zoom + (double) offsety;
+            xdraw = (rotateX(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - radius) / zoom + (double) offsetx;
+            ydraw = (rotateY(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - radius) / zoom + (double) offsety;
 
             //draws the bodies
             g.fillOval((int) xdraw, (int) ydraw, (int) ((radius * 2) /  zoom), (int) ((radius * 2) /  zoom));
@@ -114,8 +113,8 @@ public void scrollRectToVisible(Rectangle arg0) {
                     if(trailList.get(index).getIndex() == i){
     
                         g.setColor(Color.RED);
-                        xdraw = trailList.get(index).getxCoord() / zoom + offsetx;
-                        ydraw = trailList.get(index).getyCoord() / zoom + offsety;
+                        xdraw = rotateX(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsetx;
+                        ydraw = rotateY(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsety;
     
                         //stops first loop shenanigans 
                         if(firstTrailLoop){
@@ -127,8 +126,8 @@ public void scrollRectToVisible(Rectangle arg0) {
                         g.drawLine((int) xdraw, (int) ydraw, (int) xdraw2, (int) ydraw2);
         
                         try{
-                            xdraw2 = trailList.get(index).getxCoord() / zoom + offsetx;
-                            ydraw2 = trailList.get(index).getyCoord() / zoom + offsety;
+                            xdraw2 = rotateX(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsetx;
+                            ydraw2 = rotateY(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsety;
                         }catch (Exception e){
                             xdraw2 = xdraw;
                             ydraw2 = ydraw;
@@ -325,70 +324,86 @@ public void scrollRectToVisible(Rectangle arg0) {
         physicsSim.setSpeed((int) (physicsSim.getSpeed() / 2));
     }
 
-    public void twoBodyAnalysis(){
-        if(twoBodyAnalytics){
-            if(!(firstBody == secondBody)){
-                distance = (double) Math.sqrt(Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocx() - physicsSim.getPhysicsList().get(secondBody).getLocx()), 2) + Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocy() - physicsSim.getPhysicsList().get(secondBody).getLocy()), 2));
-                velocity = Math.sqrt(Math.pow(physicsSim.getPhysicsList().get(firstBody).getVelx(), 2) + Math.pow(physicsSim.getPhysicsList().get(firstBody).getVely(), 2));
-
-                if(distance > distance2){
-                    ascending = true;
-                }else if(distance < distance2){
-                    ascending = false;
-                }
-
-                //make the first loop work right
-                if(firstLoopThing){
-                    ascended = ascending;
-                    firstLoopThing = false;
-                }
-
-                //does the stuff
-                if(ascending && !ascended){
-                    distancePeri = distance;
-                    apsideList.add(new Apside(physicsSim.getPhysicsList().get(firstBody).getLocx(), physicsSim.getPhysicsList().get(firstBody).getLocy(), false, distance));
-                    //System.out.println("Periapsis Reached, altitude: " + distance);
-                    realTime = physicsSim.getTimePassed() - lastPeri;
-                    System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
-
-                    //finds the semi-major axis through black magic (This most likely does not work)
-                    gm = 67384.1 * (physicsSim.getPhysicsList().get(firstBody).getMass() + physicsSim.getPhysicsList().get(secondBody).getMass());
-                    orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
-                    semimajorAxis = -1 * gm / (2 * orbitalEnergy);
-                    semimajorAxis = (distanceApo + distancePeri) / 2;
-
-                    predictedTime = 2 * Math.PI * Math.sqrt(Math.pow(semimajorAxis, 3) / gm);
-
-                    timeDifference = ((predictedTime - realTime) / ((predictedTime + realTime) / 2)) * 100;
-
-                    System.out.println("Time should be: " + predictedTime);
-                    System.out.println("Percentage difference: " + timeDifference + "%\n");
-                    //System.out.println("Semi-major Axis: " + semimajorAxis);
-                    //System.out.println("Semi-major Axis scuffed: " + (distanceApo + distancePeri) / 2);
-
-                    lastPeri = physicsSim.getTimePassed();
-
-                }else if(!ascending && ascended){
-                    distanceApo = distance;
-                    apsideList.add(new Apside(physicsSim.getPhysicsList().get(firstBody).getLocx(), physicsSim.getPhysicsList().get(firstBody).getLocy(), true, distance));
-                    //System.out.println("Apoapsis Reached, altitude: " + distance);
-                }
-
-                if(ascending){
-                    ascended = true;
-                }else{
-                    ascended = false;
-                }
-
-                distance2 = (double) Math.sqrt(Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocx() - physicsSim.getPhysicsList().get(secondBody).getLocx()), 2) + Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocy() - physicsSim.getPhysicsList().get(secondBody).getLocy()), 2));
-
-            }
-        }else{
-            apsideList.clear();
-            firstBody = 0;
-            secondBody = 0;
-        }
+    public double rotateX(double posx, double posy, double rads){
+        return (posx * Math.cos(rads)) - (posy * Math.sin(rads));
     }
+
+    public double rotateY(double posx, double posy, double rads){
+        return (posx * Math.sin(rads)) + (posy * Math.cos(rads));
+    }
+
+    public void setRotationalOffset(double rads){
+        rotationalOffset = rads;
+    }
+
+    public double getRotationalOffset(){
+        return rotationalOffset;
+    }
+
+    // public void twoBodyAnalysis(){
+    //     if(twoBodyAnalytics){
+    //         if(!(firstBody == secondBody)){
+    //             distance = (double) Math.sqrt(Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocx() - physicsSim.getPhysicsList().get(secondBody).getLocx()), 2) + Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocy() - physicsSim.getPhysicsList().get(secondBody).getLocy()), 2));
+    //             velocity = Math.sqrt(Math.pow(physicsSim.getPhysicsList().get(firstBody).getVelx(), 2) + Math.pow(physicsSim.getPhysicsList().get(firstBody).getVely(), 2));
+
+    //             if(distance > distance2){
+    //                 ascending = true;
+    //             }else if(distance < distance2){
+    //                 ascending = false;
+    //             }
+
+    //             //make the first loop work right
+    //             if(firstLoopThing){
+    //                 ascended = ascending;
+    //                 firstLoopThing = false;
+    //             }
+
+    //             //does the stuff
+    //             if(ascending && !ascended){
+    //                 distancePeri = distance;
+    //                 apsideList.add(new Apside(physicsSim.getPhysicsList().get(firstBody).getLocx(), physicsSim.getPhysicsList().get(firstBody).getLocy(), false, distance));
+    //                 //System.out.println("Periapsis Reached, altitude: " + distance);
+    //                 realTime = physicsSim.getTimePassed() - lastPeri;
+    //                 System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
+
+    //                 //finds the semi-major axis through black magic (This most likely does not work)
+    //                 gm = 67384.1 * (physicsSim.getPhysicsList().get(firstBody).getMass() + physicsSim.getPhysicsList().get(secondBody).getMass());
+    //                 orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
+    //                 semimajorAxis = -1 * gm / (2 * orbitalEnergy);
+    //                 semimajorAxis = (distanceApo + distancePeri) / 2;
+
+    //                 predictedTime = 2 * Math.PI * Math.sqrt(Math.pow(semimajorAxis, 3) / gm);
+
+    //                 timeDifference = ((predictedTime - realTime) / ((predictedTime + realTime) / 2)) * 100;
+
+    //                 System.out.println("Time should be: " + predictedTime);
+    //                 System.out.println("Percentage difference: " + timeDifference + "%\n");
+    //                 //System.out.println("Semi-major Axis: " + semimajorAxis);
+    //                 //System.out.println("Semi-major Axis scuffed: " + (distanceApo + distancePeri) / 2);
+
+    //                 lastPeri = physicsSim.getTimePassed();
+
+    //             }else if(!ascending && ascended){
+    //                 distanceApo = distance;
+    //                 apsideList.add(new Apside(physicsSim.getPhysicsList().get(firstBody).getLocx(), physicsSim.getPhysicsList().get(firstBody).getLocy(), true, distance));
+    //                 //System.out.println("Apoapsis Reached, altitude: " + distance);
+    //             }
+
+    //             if(ascending){
+    //                 ascended = true;
+    //             }else{
+    //                 ascended = false;
+    //             }
+
+    //             distance2 = (double) Math.sqrt(Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocx() - physicsSim.getPhysicsList().get(secondBody).getLocx()), 2) + Math.pow((double) (physicsSim.getPhysicsList().get(firstBody).getLocy() - physicsSim.getPhysicsList().get(secondBody).getLocy()), 2));
+
+    //         }
+    //     }else{
+    //         apsideList.clear();
+    //         firstBody = 0;
+    //         secondBody = 0;
+    //     }
+    // }
 
 
     private void drawTransparentRing(Graphics g1, GravBody b) {
