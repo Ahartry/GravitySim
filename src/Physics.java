@@ -186,6 +186,8 @@ public class Physics {
         
                         distance2 = (double) Math.sqrt(Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocx() - physicsList.get(gpanel.getSecondBody()).getLocx()), 2) + Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocy() - physicsList.get(gpanel.getSecondBody()).getLocy()), 2));
                     }
+                }else if(gpanel.getLagrange()){
+                    
                 }else{
                     gpanel.getApsideList().clear();
                     gpanel.setFirstBody(0);

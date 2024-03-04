@@ -112,7 +112,8 @@ public class App {
         // physicsSim.getPhysicsList().add(new GravBody(0, -5370, 4558857000d, 0, 102409, 24622, false, Color.BLUE)); // neptune
 
         physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 5000, true, Color.BLACK));
-        physicsSim.getPhysicsList().add(new GravBody(0, 1155.94, 50000, 0, 1, 1000, false, Color.BLUE));
+        physicsSim.getPhysicsList().add(new GravBody(0, 1155.94, 50000, 0, 10, 1000, false, Color.BLUE));
+        physicsSim.getPhysicsList().add(new GravBody(-1001.0731888353193, 577.9703748420718, 25000.01621373392, 43301.26082821424, 0, 1000, false, Color.GREEN));
 
         //physics loop
         startNanoTime = System.nanoTime();
@@ -218,11 +219,12 @@ public class App {
         public void mouseClicked(MouseEvent e) {
 
             //add something to focus and stay on certain object, don't know how to do the stay part rn so leaving it for later
+            //this has been completed but the above comment will be left for the sake of historicity
             if(e.getButton() == MouseEvent.BUTTON1){
                 selectedSoFar = false;
                 for(int i = 0; i < physicsSim.getPhysicsList().size(); i++){
-                    double locx = physicsSim.getPhysicsList().get(i).getLocx() / gamePanel.getZoom() + gamePanel.getOffsetx();
-                    double locy = physicsSim.getPhysicsList().get(i).getLocy() / gamePanel.getZoom() + gamePanel.getOffsety();
+                    double locx = gamePanel.rotateObjectX(physicsSim.getPhysicsList().get(i), gamePanel.getRotationalOffset()) / gamePanel.getZoom() + gamePanel.getOffsetx();
+                    double locy = gamePanel.rotateObjectY(physicsSim.getPhysicsList().get(i), gamePanel.getRotationalOffset()) / gamePanel.getZoom() + gamePanel.getOffsety();
                     int radius = (int) Math.sqrt(Math.pow(locx - e.getX(), 2) + Math.pow(locy - e.getY(), 2));
 
                     if(radius < physicsSim.getPhysicsList().get(i).getRadius() / gamePanel.getZoom()){
@@ -235,11 +237,22 @@ public class App {
                                 //gamePanel.setTwoBodyAnalytics(false);
                                 gamePanel.setFirstBody(gamePanel.getObjectSelected());
                                 gamePanel.setSecondBody(i);
-                                System.out.println(gamePanel.getFirstBody()+ ", " + gamePanel.getSecondBody());
+                                System.out.println("Analysis at: " + gamePanel.getFirstBody()+ ", " + gamePanel.getSecondBody());
+                                gamePanel.setLagrange(false);
                             }
 
                             selectedSoFar = true;
-                        }else{
+                        }else if(gamePanel.getLagrange() && gamePanel.getSelected()){
+                            if(gamePanel.getObjectSelected() == i){
+
+                            }else{
+                                gamePanel.setFirstBody(gamePanel.getObjectSelected());
+                                gamePanel.setSecondBody(i);
+                                gamePanel.setTwoBodyAnalytics(false);
+                                gamePanel.clearTrail();
+                            }
+                        }
+                        else{
                             
                             gamePanel.setObjectSelected(i);
                             selectedSoFar = true;
@@ -262,6 +275,7 @@ public class App {
                 }else{
                     gamePanel.setSelected(false);
                     menuPanel.getEditButton().setEnabled(false);
+                    menuPanel.getFocusButton().setEnabled(false);
 
                     //make sure button isn't grayed out if focused
                     if(!gamePanel.getFocused()){

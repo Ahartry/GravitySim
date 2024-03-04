@@ -32,6 +32,7 @@ public class MPanel extends JPanel{
     Action increaseSpeedAction;
     Action decreaseSpeedAction;
     Action zToggleAction;
+    Action lagrangeAction;
 
     GButton newButton;
     GButton editButton;
@@ -74,6 +75,7 @@ public class MPanel extends JPanel{
         this.increaseSpeedAction = new increaseSpeedAction();
         this.decreaseSpeedAction = new decreaseSpeedAction();
         this.zToggleAction = new zToggleAction();
+        this.lagrangeAction = new lagrangeAction();
 
         //adds the buttons
         this.newButton = new GButton("New");
@@ -114,9 +116,6 @@ public class MPanel extends JPanel{
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('r'), "revertAction");
         this.getActionMap().put("revertAction", revertAction);
 
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('r'), "revertAction");
-        this.getActionMap().put("revertAction", revertAction);
-
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "backwardCycleAction");
         this.getActionMap().put("backwardCycleAction", backwardCycleAction);
 
@@ -141,6 +140,8 @@ public class MPanel extends JPanel{
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('z'), "zToggleAction");
         this.getActionMap().put("zToggleAction", zToggleAction);
 
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('l'), "lagrangeAction");
+        this.getActionMap().put("lagrangeAction", lagrangeAction);
 
         //sets up the buttons
         newButton.addActionListener(new newAction());
@@ -263,22 +264,24 @@ public class MPanel extends JPanel{
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
+            if(savedList.size() > 0){
+                physics.getPhysicsList().clear();
+                gpanel.getTrailList().clear();
+                gpanel.getApsideList().clear();
+    
+                for(int i = 0; i < savedList.size(); i++){
+                    physics.getPhysicsList().add(new GravBody(savedList.get(i)));
+                }
+                for(int i = 0; i < trailList.size(); i++){
+                    gpanel.getTrailList().add(new Trail(trailList.get(i)));
+                }
+                for(int i = 0; i < apsideList.size(); i++){
+                    gpanel.getApsideList().add(new Apside(apsideList.get(i)));
+                }
+            }
 
             //Collections.copy(savedList, physicsList);
             //System.out.println(savedList.get(0).getLocx());
-            physics.getPhysicsList().clear();
-            gpanel.getTrailList().clear();
-            gpanel.getApsideList().clear();
-
-            for(int i = 0; i < savedList.size(); i++){
-                physics.getPhysicsList().add(new GravBody(savedList.get(i)));
-            }
-            for(int i = 0; i < trailList.size(); i++){
-                gpanel.getTrailList().add(new Trail(trailList.get(i)));
-            }
-            for(int i = 0; i < apsideList.size(); i++){
-                gpanel.getApsideList().add(new Apside(apsideList.get(i)));
-            }
         }
         
     }
@@ -308,6 +311,11 @@ public class MPanel extends JPanel{
             gpanel.setOffsetx(gpanel.getXDimension() / 2);
             gpanel.setOffsety(gpanel.getYDimension() / 2);
             gpanel.setFocused(false);
+            focusButton.setText("Focus on Body");
+            if(gpanel.getLagrange()){
+                gpanel.setLagrange(false);
+                gpanel.clearTrail();
+            }
         }
         
     }
@@ -316,19 +324,22 @@ public class MPanel extends JPanel{
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            gpanel.setFocused(!gpanel.getFocused());
-            gpanel.setObjectFocus(gpanel.getObjectSelected());
-            
-            //applies new text
-            if(gpanel.getFocused()){
-                focusButton.setText("Unfocus");
+            if(gpanel.getSelected()){
+                gpanel.setFocused(!gpanel.getFocused());
+                gpanel.setObjectFocus(gpanel.getObjectSelected());
                 
-            }else{
-                focusButton.setText("Focus on Body");
-                if(!gpanel.getSelected()){
-                    focusButton.setEnabled(false);
+                //applies new text
+                if(gpanel.getFocused()){
+                    focusButton.setText("Unfocus");
+                    
+                }else{
+                    focusButton.setText("Focus on Body");
+                    if(!gpanel.getSelected()){
+                        focusButton.setEnabled(false);
+                    }
                 }
             }
+
         }
         
     }
@@ -428,6 +439,15 @@ public class MPanel extends JPanel{
         public void actionPerformed(ActionEvent arg0){
             zToggle = !zToggle;
             System.out.println(zToggle);
+        }
+    }
+
+    public class lagrangeAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent arg0){
+            gpanel.setLagrange(!gpanel.getLagrange());
+            gpanel.setFirstLoopThing(true);
         }
     }
 
