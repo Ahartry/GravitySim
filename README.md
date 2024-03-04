@@ -10,11 +10,11 @@ Future features will include:
 - Ability to add/edit new celestial bodies
 - Custom startup file
 - Save planetary systems
-- Change frame of reference
 
 Features that have been added:
 - Adjustable speed
 - Two-body analysis
+- Change frame of reference
 
 
 Contact me at ahartry87@gmail.com if you want to insult my program
