@@ -112,7 +112,7 @@ public class App {
         // physicsSim.getPhysicsList().add(new GravBody(0, -5370, 4558857000d, 0, 102409, 24622, false, Color.BLUE)); // neptune
 
         physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 5000, true, Color.BLACK));
-        physicsSim.getPhysicsList().add(new GravBody(0, 1155.94, 50000, 0, 10, 1000, false, Color.BLUE));
+        physicsSim.getPhysicsList().add(new GravBody(0, 1155.94, 50000, 0, 35, 1000, false, Color.BLUE));
         physicsSim.getPhysicsList().add(new GravBody(-1001.0731888353193, 577.9703748420718, 25000.01621373392, 43301.26082821424, 0, 1000, false, Color.GREEN));
 
         //physics loop

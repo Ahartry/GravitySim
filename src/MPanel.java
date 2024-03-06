@@ -49,6 +49,10 @@ public class MPanel extends JPanel{
     ArrayList<GravBody> savedList = new ArrayList<>();
     ArrayList<Trail> trailList = new ArrayList<>();
     ArrayList<Apside> apsideList = new ArrayList<>();
+    int savedFirstBody;
+    int savedSecondBody;
+    boolean savedLagrange;
+    boolean savedAnalysis;
 
     int buttonWidth = 190;
     boolean zToggle = false;
@@ -255,6 +259,11 @@ public class MPanel extends JPanel{
                 apsideList.add(new Apside(gpanel.getApsideList().get(i)));
             }
 
+            savedAnalysis = gpanel.getTwoBodyAnalytics();
+            savedLagrange = gpanel.getLagrange();
+            savedFirstBody = gpanel.getFirstBody();
+            savedSecondBody = gpanel.getSecondBody();
+
             revertButton.setEnabled(true);
         }
         
@@ -278,6 +287,11 @@ public class MPanel extends JPanel{
                 for(int i = 0; i < apsideList.size(); i++){
                     gpanel.getApsideList().add(new Apside(apsideList.get(i)));
                 }
+
+                gpanel.setTwoBodyAnalytics(savedAnalysis);
+                gpanel.setLagrange(savedLagrange);
+                gpanel.setFirstBody(savedFirstBody);
+                gpanel.setSecondBody(savedSecondBody);
             }
 
             //Collections.copy(savedList, physicsList);

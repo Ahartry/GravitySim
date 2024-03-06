@@ -21,6 +21,7 @@ public class GravBody {
         mass = body.getMass();
         radius = body.getRadius();
         fixed = body.getFixed();
+        color = body.getColor();
     }
 
     //declares the variables of each GravBody
@@ -66,6 +67,9 @@ public class GravBody {
     public void setOrbitalEnergy(double x){
         this.orbitalEnergy = x;
     }
+    public void setColor(Color a){
+        this.color = a;
+    }
 
     public double getVelx(){
         return this.velx;
@@ -90,6 +94,9 @@ public class GravBody {
     }
     public double getOrbitalEnergy(){
         return this.orbitalEnergy;
+    }
+    public Color getColor(){
+        return this.color;
     }
 
 }
