@@ -11,7 +11,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import javax.swing.JLabel;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Scanner;
 
 public class App {
 
@@ -39,6 +45,8 @@ public class App {
     
 
     public void run() throws IOException{
+        checkFiles();
+
         physicsSim.setGPanel(gamePanel);
         
         //makes the basic variables and stuff
@@ -339,7 +347,86 @@ public class App {
     public double getRealY(MouseEvent e){
         return (e.getY() - gamePanel.getOffsety()) * gamePanel.getZoom();
     }
-     }
+
+    public void checkFiles(){
+        Scanner scan;
+
+        boolean firstCheckLoop = true;
+
+        //starting config:
+        String configDefault = "#Tick speed:\n1000\n\n#Simulation speed:\n1000\n\n#Celestial bodies:\n#Format: Velx (m/s), Vely (m/s), Posx (km), Posy (km), Mass (e21kg), Radius (km), Fixed(true/false) Color (Color.INSERT_COLOR)\n0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW\n-58980, 0, 0, -46000000, 330, 2440, false, Color.LIGHT_GRAY\n34790, 0, 0, 108940000, 4868, 6052, false, Color.ORANGE\n0, 30290, -147100000, 0, 5972, 6372, false, Color.BLUE\n1022, 30290, -147100000, 405000, 73,1737, false, Color.GRAY\n0, -26500, 206650000, 0, 642,3389, false, Color.RED";
+
+        String currentDirectory = System.getProperty("user.dir");
+
+        // Create a File object for the current directory
+        File directory = new File(currentDirectory);
+
+        // Get a list of files in the directory
+        File[] files = directory.listFiles();
+
+        Path path = Path.of("config.txt");
+
+        boolean configFound = false;
+        // Display the list of files
+        if (files != null) {
+            for (File file : files) {
+                if(file.getName().equals("config.txt")){
+                    configFound = true;
+                }
+            }
+        }
+        if(!configFound){
+            try {
+                // Create the file and write the content to it
+                Files.write(path, configDefault.getBytes(), StandardOpenOption.CREATE);
+    
+                System.out.println("Config file recreated successfully.");
+            } catch (IOException e) {
+                // Handle file creation error
+                System.err.println("Error creating the file: " + e.getMessage());
+            }
+        }
+
+        File config = new File(currentDirectory + "/config.txt");
+        System.out.println(config);
+
+        try {
+            scan = new Scanner(config);
+            //System.out.println("ok");
+            
+            //gets tick speed
+            while (scan.hasNext()) {
+                String lineOfText = scan.nextLine();
+            
+                if(lineOfText.startsWith("#")) {
+                    continue;
+                }
+                if(lineOfText.equals("")){
+                    break;
+                }
+                physicsSim.setTickSpeed(Integer.parseInt(lineOfText));
+            }
+
+            //gets speed
+            while (scan.hasNext()) {
+                String lineOfText = scan.nextLine();
+            
+                if(lineOfText.startsWith("#")) {
+                    continue;
+                }
+                if(lineOfText.equals("") && !firstCheckLoop){
+                    break;
+                }
+                physicsSim.setSpeed(Integer.parseInt(lineOfText));
+                firstCheckLoop = false;
+            }
+            System.out.println("Loaded speeds");
+    
+        } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+        }
+    }
+}
 
 
 

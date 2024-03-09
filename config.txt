@@ -1,0 +1,14 @@
+#Tick speed:
+1000
+
+#Simulation speed:
+1000
+
+#Celestial bodies:
+#Format: Velx (m/s), Vely (m/s), Posx (km), Posy (km), Mass (e21kg), Radius (km), Fixed(true/false) Color (Color.INSERT_COLOR)
+0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW
+-58980, 0, 0, -46000000, 330, 2440, false, Color.LIGHT_GRAY
+34790, 0, 0, 108940000, 4868, 6052, false, Color.ORANGE
+0, 30290, -147100000, 0, 5972, 6372, false, Color.BLUE
+1022, 30290, -147100000, 405000, 73,1737, false, Color.GRAY
+0, -26500, 206650000, 0, 642,3389, false, Color.RED

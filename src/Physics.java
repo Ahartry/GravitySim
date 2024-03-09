@@ -235,5 +235,13 @@ public class Physics {
     public int getSpeed(){
         return physicsSpeed;
     }
+
+    public void setTickSpeed(long x){
+        ticksPerFrame = x;
+    }
+
+    public long getTickSpeed(){
+        return ticksPerFrame;
+    }
 }
 
