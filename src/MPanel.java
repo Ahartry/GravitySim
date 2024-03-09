@@ -235,6 +235,9 @@ public class MPanel extends JPanel{
         @Override
         public void actionPerformed(ActionEvent arg0) {
             physics.setPaused(!physics.getPaused());
+            if(physics.getPaused()){
+                gpanel.setJustPaused(true);
+            }
         }
         
     }

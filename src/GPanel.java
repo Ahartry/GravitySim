@@ -63,6 +63,7 @@ public void scrollRectToVisible(Rectangle arg0) {
     double rotationalOffset = 0;
     boolean lagrange = false;
     double lagrangeOffset = 0;
+    boolean justPaused = false;
 
     private ArrayList<Trail> trailList = new ArrayList<>();
     private ArrayList<Apside> apsideList = new ArrayList<>();
@@ -102,7 +103,19 @@ public void scrollRectToVisible(Rectangle arg0) {
                     //do nothing
                 }else{
                     trailList.add(new Trail(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), i));
-                }     
+                }
+                    
+            //something about drawing first loop after pausing
+            }else if(justPaused){
+                if(lagrange && i != firstBody && i != secondBody){
+                    trailList.add(new Trail(rotateObjectX(physicsSim.getPhysicsList().get(i), 0), rotateObjectY(physicsSim.getPhysicsList().get(i), 0), i));
+                }else if(lagrange){
+                    //do nothing
+                }else{
+                    trailList.add(new Trail(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), i));
+                }
+
+                justPaused = false; 
             }
             j++;
 
@@ -390,6 +403,10 @@ public void scrollRectToVisible(Rectangle arg0) {
 
     public double getLagrangeOffset(){
         return lagrangeOffset;
+    }
+
+    public void setJustPaused(boolean x){
+        justPaused = x;
     }
 
     // public void twoBodyAnalysis(){
