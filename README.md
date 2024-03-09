@@ -1,6 +1,6 @@
 ## This is a Gravity Simulation
 
-This was made for my Physics IA. This is currently very much a work in progress, and will for some time not include all desired features
+2D gravity simulation. This is currently very much a work in progress, and will for some time not include all desired features
 
 ## Roadmap
 
