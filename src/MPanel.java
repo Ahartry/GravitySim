@@ -4,6 +4,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
@@ -33,6 +37,7 @@ public class MPanel extends JPanel{
     Action decreaseSpeedAction;
     Action zToggleAction;
     Action lagrangeAction;
+    Action saveSystemAction;
 
     GButton newButton;
     GButton editButton;
@@ -80,6 +85,7 @@ public class MPanel extends JPanel{
         this.decreaseSpeedAction = new decreaseSpeedAction();
         this.zToggleAction = new zToggleAction();
         this.lagrangeAction = new lagrangeAction();
+        this.saveSystemAction = new saveSystemAction();
 
         //adds the buttons
         this.newButton = new GButton("New");
@@ -146,6 +152,9 @@ public class MPanel extends JPanel{
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('l'), "lagrangeAction");
         this.getActionMap().put("lagrangeAction", lagrangeAction);
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('w'), "saveSystemAction");
+        this.getActionMap().put("saveSystemAction", saveSystemAction);
 
         //sets up the buttons
         newButton.addActionListener(new newAction());
@@ -465,6 +474,29 @@ public class MPanel extends JPanel{
         public void actionPerformed(ActionEvent arg0){
             gpanel.setLagrange(!gpanel.getLagrange());
             gpanel.setFirstLoopThing(true);
+        }
+    }
+
+    public class saveSystemAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent arg0){
+            Path path = Path.of("config.txt");
+            String output = new String("#Tick speed:\n" + physics.getTickSpeed() + "\n\n#Simulation speed:\n" + physics.getSpeed() + "\n\n#Starting zoom:\n" + gpanel.getZoom() + 
+            "\n\n#Celestial bodies Format: Velx (m/s) Vely (m/s) Posx (km) Posy (km) Mass (e21kg) Radius (km) Fixed(true/false) Color (r g b)");
+            for(int i = 0; i < physics.getPhysicsList().size(); i++){
+                output = output + "\n" + physics.getPhysicsList().get(i).getVelx() + " " + physics.getPhysicsList().get(i).getVely() + " " + physics.getPhysicsList().get(i).getLocx() / 1000
+                + " " + physics.getPhysicsList().get(i).getLocy() / 1000 + " " + physics.getPhysicsList().get(i).getMass() / 1000000 + " " + physics.getPhysicsList().get(i).getRadius() / 1000
+                + " " + physics.getPhysicsList().get(i).getFixed() + " " + physics.getPhysicsList().get(i).getColor().getRed() + " " + physics.getPhysicsList().get(i).getColor().getGreen()
+                + " " + physics.getPhysicsList().get(i).getColor().getBlue();
+            }
+            //System.out.println(output);
+            try {
+                Files.write(path, output.getBytes(), StandardOpenOption.CREATE);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 

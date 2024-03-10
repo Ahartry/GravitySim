@@ -123,7 +123,7 @@ public class App {
             gamePanel.repaint();
             if(!gamePanel.getShowControls() == showControls){
                 if(gamePanel.getShowControls()){
-                    controlText.setText("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'<BR>Switch trail draw mode: 't'<BR>Increase speed: UP<BR>Decrease speed: DOWN</html>");
+                    controlText.setText("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'<BR>Switch trail draw mode: 't'<BR>Increase speed: UP<BR>Decrease speed: DOWN<BR>Enable relative reference frame: 'l'<BR>Write system to file: 'w'</html>");
                 }else{
                     controlText.setText("Press '1' to show controls");
                 }
@@ -422,6 +422,7 @@ public class App {
             }
 
             System.out.println("Loaded speeds");
+            @SuppressWarnings("unused")
             String lineOfText = scan.nextLine();
 
             //adds the bodies
