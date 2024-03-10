@@ -79,7 +79,7 @@ public class App {
         //game panel setup
         gamePanel.setDimensions(1200, 700);
         gamePanel.setLayout(new GridBagLayout());
-        gamePanel.setZoom(50000);
+        //gamePanel.setZoom(50000);
         gamePanel.setFocusable(true);
         gamePanel.requestFocus();
         gamePanel.addMouseWheelListener(new WheelThing());
@@ -406,6 +406,21 @@ public class App {
                 physicsSim.setSpeed(Integer.parseInt(lineOfText));
                 firstCheckLoop = false;
             }
+
+            //gets zoom
+            while (scan.hasNext()) {
+                String lineOfText = scan.nextLine();
+            
+                if(lineOfText.startsWith("#")) {
+                    continue;
+                }
+                if(lineOfText.equals("") && !firstCheckLoop){
+                    break;
+                }
+                gamePanel.setZoom(Double.parseDouble(lineOfText));
+                firstCheckLoop = false;
+            }
+
             System.out.println("Loaded speeds");
             String lineOfText = scan.nextLine();
 

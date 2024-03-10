@@ -1,8 +1,11 @@
 #Tick speed:
-1000
+2000
 
 #Simulation speed:
-1000
+50000
+
+#Starting zoom:
+1000000000
 
 #Celestial bodies Format: Velx (m/s) Vely (m/s) Posx (km) Posy (km) Mass (e21kg) Radius (km) Fixed(true/false) Color (r g b)
 0 0 0 0 1988500000 695700 true 255 255 0
