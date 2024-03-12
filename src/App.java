@@ -74,7 +74,7 @@ public class App {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.weightx = 1;
-        gbc.weighty =1;
+        gbc.weighty = 1;
 
         //game panel setup
         gamePanel.setDimensions(1200, 700);
