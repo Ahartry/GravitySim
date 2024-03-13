@@ -1,6 +1,4 @@
+### Java ###
+# Compiled class file
 *.class
-bin/App.class
-bin/App$MiddleClickPan.class
-bin/App$MouseDragged.class
-bin/App$WheelThing.class
-bin/GPanel.class
+bin/
