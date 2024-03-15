@@ -134,8 +134,8 @@ public class Physics {
                 //important: First body is the one you want to get stats about. Second is the host. Should be reversed. Yes, I know
                 if(gpanel.getTwoBodyAnalytics()){
                     if(!(gpanel.getFirstBody() == gpanel.getSecondBody())){
-                        distance = (double) Math.sqrt(Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocx() - physicsList.get(gpanel.getSecondBody()).getLocx()), 2) + Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocy() - physicsList.get(gpanel.getSecondBody()).getLocy()), 2));
-                        velocity = Math.sqrt(Math.pow(physicsList.get(gpanel.getFirstBody()).getVelx(), 2) + Math.pow(physicsList.get(gpanel.getFirstBody()).getVely(), 2));
+                        distance = getDistance(gpanel.getFirstBody(), gpanel.getSecondBody());
+                        velocity = getVelocity(gpanel.getFirstBody());
         
                         if(distance > distance2){
                             ascending = true;
@@ -184,7 +184,7 @@ public class Physics {
                             ascended = false;
                         }
         
-                        distance2 = (double) Math.sqrt(Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocx() - physicsList.get(gpanel.getSecondBody()).getLocx()), 2) + Math.pow((double) (physicsList.get(gpanel.getFirstBody()).getLocy() - physicsList.get(gpanel.getSecondBody()).getLocy()), 2));
+                        distance2 = getDistance(gpanel.getFirstBody(), gpanel.getSecondBody());
                     }
                 }else if(gpanel.getLagrange()){
                     
@@ -242,6 +242,34 @@ public class Physics {
 
     public long getTickSpeed(){
         return ticksPerFrame;
+    }
+
+    public double getDistance(int i1, int i2){
+        return Math.sqrt((Math.pow(physicsList.get(i1).getLocx() - physicsList.get(i2).getLocx(), 2) + Math.pow(physicsList.get(i1).getLocy() - physicsList.get(i2).getLocy(), 2)));
+    }
+
+    public double getVelocity(int i1){
+        return Math.sqrt((Math.pow(physicsList.get(i1).getVelx(), 2) + Math.pow(physicsList.get(i1).getVely(), 2)));
+    }
+
+    public double getCentripedal(int i1){
+        System.out.println("Distance: " + Math.pow(getDistance(i1, guessHost(i1)), 2));
+        System.out.println("Whatever this is: " + (66743 * physicsList.get(guessHost(i1)).getMass() * physicsList.get(i1).getMass() / (Math.pow(getDistance(i1, guessHost(i1)), 2))));
+        return 66743 * physicsList.get(guessHost(i1)).getMass() * physicsList.get(i1).getMass() / (Math.pow(getDistance(i1, guessHost(i1)), 2));   
+    }
+
+    public int guessHost(int i1){
+        int guess = 0;
+        double gravityThing = 0;
+        for(int i = 0; i < physicsList.size(); i++){
+            if(i1 != i){
+                if((physicsList.get(i).getMass() / Math.pow(getDistance(i1, i), 2)) > gravityThing){
+                    guess = i;
+                    gravityThing = physicsList.get(i).getMass() / Math.pow(getDistance(i1, i), 2);
+                }
+            }
+        }
+        return guess;
     }
 }
 

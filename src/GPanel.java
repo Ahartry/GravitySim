@@ -204,13 +204,12 @@ public void scrollRectToVisible(Rectangle arg0) {
                 }
             }
 
-            if(selected){
-                drawTransparentRing(g, physicsSim.getPhysicsList().get(objectSelected));
-                //System.out.println("Selected");
-            }
-
             //Two body analytics
             //twoBodyAnalysis();
+        }
+        if(selected){
+            drawTransparentRing(g, physicsSim.getPhysicsList().get(objectSelected));
+            //System.out.println("Selected");
         }
 
     }
@@ -484,20 +483,6 @@ public void scrollRectToVisible(Rectangle arg0) {
 
         int outerRadius = (int) (b.getRadius() / zoom + 10);
         int innerRadius = outerRadius - ringWidth;
-
-        // g.setColor(Color.BLUE); // Set the color of the ring
-
-        // // Draw outer oval
-        // g.drawOval(centerX - outerRadius, centerY - outerRadius, 2 * outerRadius, 2 * outerRadius);
-
-        // // Set XOR mode to make the inner oval transparent
-        // g.setXORMode(getBackground());
-
-        // // Draw inner oval
-        // g.drawOval(centerX - innerRadius, centerY - innerRadius, 2 * innerRadius, 2 * innerRadius);
-
-        // // Reset the XOR mode
-        // g.setPaintMode();
 
         Shape outer = new Ellipse2D.Double(centerX - (outerRadius), centerY - (outerRadius), outerRadius * 2, outerRadius * 2);
         Shape inner = new Ellipse2D.Double(centerX - (innerRadius), centerY - (innerRadius), innerRadius * 2, innerRadius * 2);

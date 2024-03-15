@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.text.NumberFormat;
 import java.util.Scanner;
 
 public class App {
@@ -29,6 +30,7 @@ public class App {
     GPanel gamePanel = new GPanel(physicsSim, frame);
     MPanel menuPanel = new MPanel(physicsSim, gamePanel);
     JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
+    JLabel infoText = new JLabel("<html>Press '1' to hide controls<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
     int zoomMulti = 10;
     int panDeltax = 0;
     int panDeltay = 0;
@@ -42,6 +44,7 @@ public class App {
     int arrayIterator = 0;
     boolean showControls;
     boolean selectedSoFar = false;
+    boolean wasSelectedLastLoop = false;
     
 
     public void run() throws IOException{
@@ -69,6 +72,7 @@ public class App {
         frame.add(menuPanel, BorderLayout.NORTH);
 
         controlText.setFont(new Font("Sans Serif", Font.BOLD, 18));
+        infoText.setFont(new Font("Sans Serif", Font.BOLD, 16));
         //controlText.setBounds(5, -480, 500, 1000);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -86,6 +90,9 @@ public class App {
         gamePanel.addMouseListener(new MiddleClickPan());
         gamePanel.addMouseMotionListener(new MouseDragged());
         gamePanel.add(controlText, gbc);
+
+        gbc.anchor = GridBagConstraints.SOUTHEAST;
+        gamePanel.add(infoText, gbc);
 
         //menu panel setup
         menuPanel.setPreferredSize(new Dimension(1200, 60));
@@ -121,6 +128,8 @@ public class App {
             //does the gameloop
             physicsSim.tick(deltaTime);
             gamePanel.repaint();
+
+            //text display checks
             if(!gamePanel.getShowControls() == showControls){
                 if(gamePanel.getShowControls()){
                     controlText.setText("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'<BR>Switch trail draw mode: 't'<BR>Increase speed: UP<BR>Decrease speed: DOWN<BR>Enable relative reference frame: 'l'<BR>Write system to file: 'w'</html>");
@@ -128,6 +137,20 @@ public class App {
                     controlText.setText("Press '1' to show controls");
                 }
                 showControls = gamePanel.getShowControls();
+            }
+            if(gamePanel.getSelected()){
+                int i = gamePanel.getObjectSelected();
+                int infoVelocity = (int) physicsSim.getVelocity(i);
+                long infoDistance = (long) (physicsSim.getDistance(i, physicsSim.guessHost(i)) / 1000);
+                long infoCentripedal = (long) (physicsSim.getCentripedal(i));
+                String c = NumberFormat.getIntegerInstance().format(infoCentripedal);
+                String d = NumberFormat.getIntegerInstance().format(infoDistance);
+                infoText.setText("<html>Selected celestial body information:<BR>Velocity: <html>" + infoVelocity + " m/s" + "<html><BR>Distance: <html>" + d + " km" + "<html><BR>Centripedal force: <html>" + c + " N");
+                wasSelectedLastLoop = true;
+
+            }else if(wasSelectedLastLoop){
+                wasSelectedLastLoop = false;
+                infoText.setText("");
             }
 
             newNanoTime = System.nanoTime();
