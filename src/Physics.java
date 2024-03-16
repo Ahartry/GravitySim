@@ -32,6 +32,8 @@ public class Physics {
     double realTime;
     double predictedTime;
     double timeDifference;
+    int apsideLoopCount = 0;
+    boolean reached = false;
 
     ArrayList<GravBody> physicsList = new ArrayList<>();
     private GPanel gpanel;
@@ -132,10 +134,10 @@ public class Physics {
 
                 //two body analysis
                 //important: First body is the one you want to get stats about. Second is the host. Should be reversed. Yes, I know
-                if(gpanel.getTwoBodyAnalytics()){
-                    if(!(gpanel.getFirstBody() == gpanel.getSecondBody())){
-                        distance = getDistance(gpanel.getFirstBody(), gpanel.getSecondBody());
-                        velocity = getVelocity(gpanel.getFirstBody());
+                if(gpanel.getSelected()){
+                    //if(!(gpanel.getObjectSelected() == guessHost(gpanel.getObjectSelected()))){
+                        distance = getDistance(gpanel.getObjectSelected(), guessHost(gpanel.getObjectSelected()));
+                        velocity = getVelocity(gpanel.getObjectSelected());
         
                         if(distance > distance2){
                             ascending = true;
@@ -143,39 +145,52 @@ public class Physics {
                             ascending = false;
                         }
         
-                        //make the first loop work right
-                        // if(firstLoopThing){
-                        //     ascended = ascending;
-                        //     firstLoopThing = false;
-                        // }
-        
                         //does the stuff
-                        if(ascending && !ascended){
-                            distancePeri = distance;
-                            gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getFirstBody()).getLocx(), physicsList.get(gpanel.getFirstBody()).getLocy(), false, distance));
-                            //System.out.println("Periapsis Reached, altitude: " + distance);
-                            realTime = getTimePassed() - lastPeri;
-                            //System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
-        
-                            //finds the semi-major axis through black magic (This most likely does not work)
-                            gm = 66743 * (physicsList.get(gpanel.getFirstBody()).getMass() + physicsList.get(gpanel.getSecondBody()).getMass());
-                            //System.out.println(gm);
-                            //orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
-                            //semimajorAxis = -1 * gm / (2 * orbitalEnergy);
-                            semimajorAxis = (distanceApo + distancePeri) / 2;
-                            System.out.println("Period: " + realTime + "s");
-                            System.out.println("Semi-major axis: " + semimajorAxis + "m\n");
-                            // for(int j = 0; j < gpanel.getApsideList().size(); j++){
-                            //     System.out.println(gpanel.getApsideList().get(j).getX());
-                            // }
-                            
-        
-                            lastPeri = getTimePassed();
-        
-                        }else if(!ascending && ascended){
-                            distanceApo = distance;
-                            gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getFirstBody()).getLocx(), physicsList.get(gpanel.getFirstBody()).getLocy(), true, distance));
-                            //System.out.println("Apoapsis Reached, altitude: " + distance);
+                        if(ascending && !ascended && apsideLoopCount > 5){
+
+                            System.out.println(gpanel.getObjectSelected() + " Peri: " + apsideLoopCount);
+                            //System.out.println(gpanel.getObjectSelected() + " Peri: " + apsideLoopCount);
+                            //stupid check
+                            if(apsideLoopCount == 0 || apsideLoopCount == 1){
+                                System.out.println("Program is stupid");
+                            }else{
+                                reached = true;
+                                distancePeri = distance;
+                                gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getObjectSelected()).getLocx(), physicsList.get(gpanel.getObjectSelected()).getLocy(), false, distance));
+                                //System.out.println("Periapsis Reached, altitude: " + distance);
+                                realTime = getTimePassed() - lastPeri;
+                                //System.out.println(gpanel.getObjectSelected() + "Peri: " + apsideLoopCount);
+                                //System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
+            
+                                //finds the semi-major axis through black magic (This most likely does not work)
+                                // gm = 66743 * (physicsList.get(gpanel.getObjectSelected()).getMass() + physicsList.get(guessHost(gpanel.getObjectSelected())).getMass());
+                                //System.out.println(gm);
+                                //orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
+                                //semimajorAxis = -1 * gm / (2 * orbitalEnergy);
+                                // semimajorAxis = (distanceApo + distancePeri) / 2;
+                                // System.out.println("Period: " + realTime + "s");
+                                // System.out.println("Semi-major axis: " + semimajorAxis + "m\n");
+                                // for(int j = 0; j < gpanel.getApsideList().size(); j++){
+                                //     System.out.println(gpanel.getApsideList().get(j).getX());
+                                // }
+                                
+                                lastPeri = getTimePassed();
+                            }
+
+                        }else if(!ascending && ascended && apsideLoopCount > 5){
+
+                            System.out.println(gpanel.getObjectSelected() + " Apo: " + apsideLoopCount);
+                            //stupid check
+                            if(apsideLoopCount == 0 || apsideLoopCount == 1){
+                                System.out.println("Program is stupid");
+                            }else{
+                                reached = true;
+                                distanceApo = distance;
+                                gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getObjectSelected()).getLocx(), physicsList.get(gpanel.getObjectSelected()).getLocy(), true, distance));
+                                //System.out.println("Apoapsis Reached, altitude: " + distance);
+                                System.out.println(gpanel.getObjectSelected() + "Apo: " + apsideLoopCount);
+                            }
+
                         }
         
                         if(ascending){
@@ -184,14 +199,20 @@ public class Physics {
                             ascended = false;
                         }
         
-                        distance2 = getDistance(gpanel.getFirstBody(), gpanel.getSecondBody());
-                    }
+                        distance2 = getDistance(gpanel.getObjectSelected(), guessHost(gpanel.getObjectSelected()));
+                    //}
+
+                    // if(firstApsideLoop && reached){
+                    //     gpanel.getApsideList().remove(gpanel.getApsideList().size() - 1);
+                    //     firstApsideLoop = false;
+                    // }
+                    apsideLoopCount++;
+                    
+                    reached = false;
                 }else if(gpanel.getLagrange()){
                     
                 }else{
                     gpanel.getApsideList().clear();
-                    gpanel.setFirstBody(0);
-                    gpanel.setSecondBody(0);
                 }
                 
                 
@@ -244,6 +265,10 @@ public class Physics {
         return ticksPerFrame;
     }
 
+    public void enableFirstApside(){
+        apsideLoopCount = 0;
+    }
+
     public double getDistance(int i1, int i2){
         return Math.sqrt((Math.pow(physicsList.get(i1).getLocx() - physicsList.get(i2).getLocx(), 2) + Math.pow(physicsList.get(i1).getLocy() - physicsList.get(i2).getLocy(), 2)));
     }
@@ -253,8 +278,6 @@ public class Physics {
     }
 
     public double getCentripedal(int i1){
-        System.out.println("Distance: " + Math.pow(getDistance(i1, guessHost(i1)), 2));
-        System.out.println("Whatever this is: " + (66743 * physicsList.get(guessHost(i1)).getMass() * physicsList.get(i1).getMass() / (Math.pow(getDistance(i1, guessHost(i1)), 2))));
         return 66743 * physicsList.get(guessHost(i1)).getMass() * physicsList.get(i1).getMass() / (Math.pow(getDistance(i1, guessHost(i1)), 2));   
     }
 

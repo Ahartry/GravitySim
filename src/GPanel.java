@@ -188,13 +188,20 @@ public void scrollRectToVisible(Rectangle arg0) {
 
             //draws the apsides
             for(int index = 0; index < apsideList.size(); index++){
-                xdraw = apsideList.get(index).getX() / zoom + offsetx;
-                ydraw = apsideList.get(index).getY() / zoom + offsety;
 
-                System.out.println(index);
+                //stupid check
+                if(apsideList.size() == 0){
+                    System.out.println("Program is stupid");
+                }else{
+                    xdraw = apsideList.get(index).getX() / zoom + offsetx;
+                    ydraw = apsideList.get(index).getY() / zoom + offsety;
+    
+                    //System.out.println(index);
+    
+                    g.setColor(Color.BLUE);
+                    g.fillOval((int) (xdraw - 2.5), (int) (ydraw - 2.5), 5, 5);
+                }
 
-                g.setColor(Color.BLUE);
-                g.fillOval((int) (xdraw - 2.5), (int) (ydraw - 2.5), 5, 5);
             }
 
             //removes old points for trail
@@ -266,6 +273,10 @@ public void scrollRectToVisible(Rectangle arg0) {
 
     public void clearTrail(){
         trailList.clear();
+    }
+
+    public void clearApside(){
+        apsideList.clear();
     }
     
     public void setObjectFocus(int x){

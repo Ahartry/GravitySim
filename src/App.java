@@ -143,9 +143,33 @@ public class App {
                 int infoVelocity = (int) physicsSim.getVelocity(i);
                 long infoDistance = (long) (physicsSim.getDistance(i, physicsSim.guessHost(i)) / 1000);
                 long infoCentripedal = (long) (physicsSim.getCentripedal(i));
+
+                //stuff about apsides
+                String infoApo;
+                String infoPeri;
+                if(gamePanel.getApsideList().size() == 0){
+                    infoApo = "Undetermined";
+                    infoPeri = "Undetermined";
+                }else if(gamePanel.getApsideList().size() == 1){
+                    if(gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 1).getApo()){
+                        infoApo = NumberFormat.getIntegerInstance().format((gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 1).getDistance())) + " km";
+                        infoPeri = "Undetermined";
+                    }else{
+                        infoApo = "Undetermined";
+                        infoPeri = NumberFormat.getIntegerInstance().format((gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 1).getDistance())) + " km";
+                    }
+                }else{
+                    if(gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 1).getApo()){
+                        infoApo = NumberFormat.getIntegerInstance().format((gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 1).getDistance())) + " km";
+                        infoPeri = NumberFormat.getIntegerInstance().format((gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 2).getDistance())) + " km";
+                    }else{
+                        infoApo = NumberFormat.getIntegerInstance().format((gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 2).getDistance())) + " km";
+                        infoPeri = NumberFormat.getIntegerInstance().format((gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 1).getDistance())) + " km";
+                    }
+                }
                 String c = NumberFormat.getIntegerInstance().format(infoCentripedal);
                 String d = NumberFormat.getIntegerInstance().format(infoDistance);
-                infoText.setText("<html>Selected celestial body information:<BR>Velocity: <html>" + infoVelocity + " m/s" + "<html><BR>Distance: <html>" + d + " km" + "<html><BR>Centripedal force: <html>" + c + " N");
+                infoText.setText("<html>Selected celestial body information:<BR>Velocity: <html>" + infoVelocity + " m/s" + "<html><BR>Distance: <html>" + d + " km" + "<html><BR>Centripedal force: <html>" + c + " N" + "<html><BR>Apoapsis: <html>" + infoApo + "<html><BR>Periapsis: <html>" + infoPeri);
                 wasSelectedLastLoop = true;
 
             }else if(wasSelectedLastLoop){
@@ -245,43 +269,15 @@ public class App {
                     int radius = (int) Math.sqrt(Math.pow(locx - e.getX(), 2) + Math.pow(locy - e.getY(), 2));
 
                     if(radius < physicsSim.getPhysicsList().get(i).getRadius() / gamePanel.getZoom()){
-
-                        if(gamePanel.getTwoBodyAnalytics() && gamePanel.getSelected()){
-                            //honestly don't know what this is
-                            if(gamePanel.getObjectSelected() == i){
-
-                            }else{
-                                //gamePanel.setTwoBodyAnalytics(false);
-                                gamePanel.setFirstBody(gamePanel.getObjectSelected());
-                                gamePanel.setSecondBody(i);
-                                System.out.println("Analysis at: " + gamePanel.getFirstBody()+ ", " + gamePanel.getSecondBody());
-                                gamePanel.setLagrange(false);
-                            }
-
-                            selectedSoFar = true;
-                        }else if(gamePanel.getLagrange() && gamePanel.getSelected()){
-                            if(gamePanel.getObjectSelected() == i){
-
-                            }else{
-                                gamePanel.setFirstBody(gamePanel.getObjectSelected());
-                                gamePanel.setSecondBody(i);
-                                gamePanel.setTwoBodyAnalytics(false);
-                                gamePanel.clearTrail();
-                            }
-                        }
-                        else{
                             
-                            gamePanel.setObjectSelected(i);
-                            selectedSoFar = true;
+                        gamePanel.setObjectSelected(i);
+                        physicsSim.enableFirstApside();
+                        selectedSoFar = true;
     
-                            if(gamePanel.getFocused()){
-                                gamePanel.setObjectFocus(i);
-                            }
-    
+                        if(gamePanel.getFocused()){
+                            gamePanel.setObjectFocus(i);
                         }
-
-                    }else{
-                        //gamePanel.setSelected(false);
+    
                     }
 
                 }
@@ -293,6 +289,7 @@ public class App {
                     gamePanel.setSelected(false);
                     menuPanel.getEditButton().setEnabled(false);
                     menuPanel.getFocusButton().setEnabled(false);
+                    gamePanel.clearApside();
 
                     //make sure button isn't grayed out if focused
                     if(!gamePanel.getFocused()){

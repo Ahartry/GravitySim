@@ -30,7 +30,6 @@ public class MPanel extends JPanel{
     Action revertAction;
     Action backwardCycleAction;
     Action forwardCycleAction;
-    Action twoBodyAnalyticsAction;
     Action removeApsisAction;
     Action trailDrawAction;
     Action increaseSpeedAction;
@@ -78,7 +77,6 @@ public class MPanel extends JPanel{
         this.revertAction = new revertAction();
         this.backwardCycleAction = new backwardCycleAction();
         this.forwardCycleAction = new forwardCycleAction();
-        this.twoBodyAnalyticsAction = new twoBodyAnalyticsAction();
         this.removeApsisAction = new removeApsisAction();
         this.trailDrawAction = new trailDrawAction();
         this.increaseSpeedAction = new increaseSpeedAction();
@@ -131,9 +129,6 @@ public class MPanel extends JPanel{
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"), "forwardCycleAction");
         this.getActionMap().put("forwardCycleAction", forwardCycleAction);
-
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('a'), "twoBodyAnalyticsAction");
-        this.getActionMap().put("twoBodyAnalyticsAction", twoBodyAnalyticsAction);
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('q'), "removeApsisAction");
         this.getActionMap().put("removeApsisAction", removeApsisAction);
@@ -393,6 +388,8 @@ public class MPanel extends JPanel{
             gpanel.setSelected(true);
             editButton.setEnabled(true);
             focusButton.setEnabled(true);
+            gpanel.clearApside();
+            physics.enableFirstApside();
 
         }
         
@@ -412,19 +409,10 @@ public class MPanel extends JPanel{
             gpanel.setSelected(true);
             editButton.setEnabled(true);
             focusButton.setEnabled(true);
-          
+            gpanel.clearApside();
+            physics.enableFirstApside();
         }
         
-    }
-
-    public class twoBodyAnalyticsAction extends AbstractAction{
-
-        @Override
-        public void actionPerformed(ActionEvent arg0){
-            gpanel.setTwoBodyAnalytics(!gpanel.getTwoBodyAnalytics());
-            gpanel.setFirstLoopThing(true);
-        }
-
     }
 
     public class removeApsisAction extends AbstractAction{

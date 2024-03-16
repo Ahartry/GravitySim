@@ -25,4 +25,10 @@ public class Apside {
     public double getY(){
         return this.y;
     }
+    public boolean getApo(){
+        return this.apo;
+    }
+    public double getDistance(){
+        return this.distance;
+    }
 }
