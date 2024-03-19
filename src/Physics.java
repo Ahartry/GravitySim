@@ -25,6 +25,7 @@ public class Physics {
     double distanceApo;
     double distancePeri;
     double lastPeri = 0;
+    double lastApo = 0;
     double velocity;
     double semimajorAxis;
     double gm;
@@ -148,6 +149,7 @@ public class Physics {
                         //does the stuff
                         if(ascending && !ascended && apsideLoopCount > 5){
 
+                            //This is a horror story. This print statement alters the functionality of the program. 
                             System.out.println(gpanel.getObjectSelected() + " Peri: " + apsideLoopCount);
                             //System.out.println(gpanel.getObjectSelected() + " Peri: " + apsideLoopCount);
                             //stupid check
@@ -188,7 +190,9 @@ public class Physics {
                                 distanceApo = distance;
                                 gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getObjectSelected()).getLocx(), physicsList.get(gpanel.getObjectSelected()).getLocy(), true, distance));
                                 //System.out.println("Apoapsis Reached, altitude: " + distance);
-                                System.out.println(gpanel.getObjectSelected() + "Apo: " + apsideLoopCount);
+                                //System.out.println(gpanel.getObjectSelected() + "Apo: " + apsideLoopCount);
+                                realTime = getTimePassed() - lastApo;
+                                lastApo = getTimePassed();
                             }
 
                         }
@@ -267,6 +271,10 @@ public class Physics {
 
     public void enableFirstApside(){
         apsideLoopCount = 0;
+    }
+
+    public double getRealTime(){
+        return realTime;
     }
 
     public double getDistance(int i1, int i2){

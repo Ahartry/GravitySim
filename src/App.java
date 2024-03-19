@@ -147,6 +147,7 @@ public class App {
                 //stuff about apsides
                 String infoApo;
                 String infoPeri;
+                String infoPeriod = "Undetermined";
                 if(gamePanel.getApsideList().size() == 0){
                     infoApo = "Undetermined";
                     infoPeri = "Undetermined";
@@ -167,9 +168,12 @@ public class App {
                         infoPeri = NumberFormat.getIntegerInstance().format((gamePanel.getApsideList().get(gamePanel.getApsideList().size() - 1).getDistance())) + " km";
                     }
                 }
+                if(gamePanel.getApsideList().size() > 2){
+                    infoPeriod = NumberFormat.getIntegerInstance().format(physicsSim.getRealTime()) + " s";
+                }
                 String c = NumberFormat.getIntegerInstance().format(infoCentripedal);
                 String d = NumberFormat.getIntegerInstance().format(infoDistance);
-                infoText.setText("<html>Selected celestial body information:<BR>Velocity: <html>" + infoVelocity + " m/s" + "<html><BR>Distance: <html>" + d + " km" + "<html><BR>Centripedal force: <html>" + c + " N" + "<html><BR>Apoapsis: <html>" + infoApo + "<html><BR>Periapsis: <html>" + infoPeri);
+                infoText.setText("<html>Selected celestial body information:<BR>Velocity: <html>" + infoVelocity + " m/s" + "<html><BR>Distance: <html>" + d + " km" + "<html><BR>Centripedal force: <html>" + c + " N" + "<html><BR>Apoapsis: <html>" + infoApo + "<html><BR>Periapsis: <html>" + infoPeri + "<html><BR>Period: <html>" + infoPeriod);
                 wasSelectedLastLoop = true;
 
             }else if(wasSelectedLastLoop){
