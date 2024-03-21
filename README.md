@@ -6,7 +6,7 @@
 
 Future features will include:
 - Ability to add/edit new celestial bodies
-- Multithreading
+- Optimization of sorts
 
 Features that have been added:
 - Adjustable speed
