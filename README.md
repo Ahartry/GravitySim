@@ -5,8 +5,8 @@
 ## Roadmap
 
 Future features will include:
-- Statistics for selected body
 - Ability to add/edit new celestial bodies
+- Optimization of sorts
 
 Features that have been added:
 - Adjustable speed
@@ -14,6 +14,7 @@ Features that have been added:
 - Change frame of reference
 - Config file
 - Save planetary systems
+- Statistics for selected body
 
 
 Contact me at ahartry87@gmail.com if you want to insult my program
