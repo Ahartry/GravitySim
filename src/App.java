@@ -29,8 +29,8 @@ public class App {
     Physics physicsSim = new Physics(1000, 2000);
     GPanel gamePanel = new GPanel(physicsSim, frame);
     MPanel menuPanel = new MPanel(physicsSim, gamePanel);
-    JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
-    JLabel infoText = new JLabel("<html>Press '1' to hide controls<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'</html>");
+    JLabel controlText = new JLabel("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT</html>");
+    JLabel infoText = new JLabel("");
     int zoomMulti = 10;
     int panDeltax = 0;
     int panDeltay = 0;
@@ -132,7 +132,7 @@ public class App {
             //text display checks
             if(!gamePanel.getShowControls() == showControls){
                 if(gamePanel.getShowControls()){
-                    controlText.setText("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Enable two-body analytics: 'a'<BR>Switch trail draw mode: 't'<BR>Increase speed: UP<BR>Decrease speed: DOWN<BR>Enable relative reference frame: 'l'<BR>Write system to file: 'w'</html>");
+                    controlText.setText("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Switch trail draw mode: 't'<BR>Increase speed: UP<BR>Decrease speed: DOWN<BR>Enable relative reference frame: 'l'<BR>Write system to file: 'w'</html>");
                 }else{
                     controlText.setText("Press '1' to show controls");
                 }
@@ -169,11 +169,12 @@ public class App {
                     }
                 }
                 if(gamePanel.getApsideList().size() > 2){
-                    infoPeriod = NumberFormat.getIntegerInstance().format(physicsSim.getRealTime()) + " s";
+                    //infoPeriod = NumberFormat.getIntegerInstance().format(physicsSim.getRealTime()) + " s";
+                    infoPeriod = formatPeriod(physicsSim.getRealTime());
                 }
                 String c = NumberFormat.getIntegerInstance().format(infoCentripedal);
                 String d = NumberFormat.getIntegerInstance().format(infoDistance);
-                infoText.setText("<html>Selected celestial body information:<BR>Velocity: <html>" + infoVelocity + " m/s" + "<html><BR>Distance: <html>" + d + " km" + "<html><BR>Centripedal force: <html>" + c + " N" + "<html><BR>Apoapsis: <html>" + infoApo + "<html><BR>Periapsis: <html>" + infoPeri + "<html><BR>Period: <html>" + infoPeriod);
+                infoText.setText("<html>............................................................<BR><html>" + physicsSim.getPhysicsList().get(i).getName() + "<html> information:<BR>Velocity: <html>" + infoVelocity + " m/s" + "<html><BR>Distance: <html>" + d + " km" + "<html><BR>Centripedal force: <html>" + c + " N" + "<html><BR>Apoapsis: <html>" + infoApo + "<html><BR>Periapsis: <html>" + infoPeri + "<html><BR>Period: <html>" + infoPeriod);
                 wasSelectedLastLoop = true;
 
             }else if(wasSelectedLastLoop){
@@ -275,6 +276,7 @@ public class App {
                     if(radius < physicsSim.getPhysicsList().get(i).getRadius() / gamePanel.getZoom()){
                             
                         gamePanel.setObjectSelected(i);
+                        System.out.println(physicsSim.getPhysicsList().get(i).getName());
                         physicsSim.enableFirstApside();
                         selectedSoFar = true;
     
@@ -442,6 +444,7 @@ public class App {
                     break;
                 }
                 gamePanel.setZoom(Double.parseDouble(lineOfText));
+                gamePanel.setDefaultZoom(Double.parseDouble(lineOfText));
                 firstCheckLoop = false;
             }
 
@@ -451,12 +454,41 @@ public class App {
 
             //adds the bodies
             while (scan.hasNext()) {
-                physicsSim.getPhysicsList().add(new GravBody(scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextBoolean(), new Color(scan.nextInt(), scan.nextInt(), scan.nextInt())));
+                physicsSim.getPhysicsList().add(new GravBody(scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextBoolean(), new Color(scan.nextInt(), scan.nextInt(), scan.nextInt()), scan.next()));
             }
     
         } catch (FileNotFoundException e1) {
                 e1.printStackTrace();
         }
+    }
+
+    public String formatPeriod(double inputTime){
+
+        int days = 0;
+        int hours = 0;
+        int minutes = 0;
+        int seconds = 0;
+        int remainder = (int) Math.floor(inputTime);
+
+        //looks at the size and stuff
+        if(inputTime > 86400){
+            days = (int) Math.floor(inputTime / 86400);
+            remainder = (int) Math.floor(inputTime % 86400);
+        }
+
+        if(remainder > 3600){
+            hours = (int) Math.floor(remainder / 3600);
+            remainder = (int) Math.floor(remainder % 3600);
+        }
+
+        if(remainder > 60){
+            minutes = (int) Math.floor(remainder / 60);
+            remainder = (int) Math.floor(remainder % 60);
+        }
+
+        seconds = remainder;
+
+        return days + "d, " + hours + "h, " + minutes + "m, " + seconds + "s";
     }
 }
 

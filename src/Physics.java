@@ -158,7 +158,7 @@ public class Physics {
                             }else{
                                 reached = true;
                                 distancePeri = distance;
-                                gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getObjectSelected()).getLocx(), physicsList.get(gpanel.getObjectSelected()).getLocy(), false, distance));
+                                gpanel.getApsideList().add(new Apside(gpanel.rotateObjectX(physicsList.get(gpanel.getObjectSelected()), 0), gpanel.rotateObjectY(physicsList.get(gpanel.getObjectSelected()), 0), false, distance));
                                 //System.out.println("Periapsis Reached, altitude: " + distance);
                                 realTime = getTimePassed() - lastPeri;
                                 //System.out.println(gpanel.getObjectSelected() + "Peri: " + apsideLoopCount);
@@ -213,8 +213,8 @@ public class Physics {
                     apsideLoopCount++;
                     
                     reached = false;
-                }else if(gpanel.getLagrange()){
-                    
+
+
                 }else{
                     gpanel.getApsideList().clear();
                 }

@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -53,6 +54,7 @@ public class MPanel extends JPanel{
     ArrayList<GravBody> savedList = new ArrayList<>();
     ArrayList<Trail> trailList = new ArrayList<>();
     ArrayList<Apside> apsideList = new ArrayList<>();
+    ArrayList<EFrame> eframeList = new ArrayList<>();
     int savedFirstBody;
     int savedSecondBody;
     boolean savedLagrange;
@@ -220,7 +222,10 @@ public class MPanel extends JPanel{
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            //EFrame frame = new EFrame(new GravBody(0, 0, 0, 0, 0, 0, false));
+            physics.setPaused(true);
+            gpanel.setJustPaused(true);
+            eframeList.add(new EFrame(new GravBody(0, 0, 0, 0, 0, 0, false, Color.BLACK, "Untitled"), gpanel, physics, eframeList));
+            System.out.println(eframeList.size());
         }
         
     }
@@ -228,8 +233,10 @@ public class MPanel extends JPanel{
     public class editAction extends AbstractAction{
 
         public void actionPerformed(ActionEvent arg0) {
-            
-            throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+            physics.setPaused(true);
+            gpanel.setJustPaused(true);
+            eframeList.add(new EFrame(physics.getPhysicsList().get(gpanel.getObjectSelected()), gpanel, physics, eframeList));
+            System.out.println(eframeList.size());
         }
         
     }
@@ -331,6 +338,7 @@ public class MPanel extends JPanel{
         public void actionPerformed(ActionEvent arg0) {
             gpanel.setOffsetx(gpanel.getXDimension() / 2);
             gpanel.setOffsety(gpanel.getYDimension() / 2);
+            gpanel.setZoom(gpanel.getDefaultZoom());
             gpanel.setFocused(false);
             focusButton.setText("Focus on Body");
             if(gpanel.getLagrange()){
@@ -462,6 +470,17 @@ public class MPanel extends JPanel{
         public void actionPerformed(ActionEvent arg0){
             gpanel.setLagrange(!gpanel.getLagrange());
             gpanel.setFirstLoopThing(true);
+            //System.out.println(gpanel.getLagrange());
+            if(gpanel.getSelected() && gpanel.getLagrange()){
+                gpanel.clearApside();
+                gpanel.clearTrail();
+            }
+
+            //lagrange or something
+            if(gpanel.getLagrange()){
+                gpanel.setFirstBody(gpanel.getObjectSelected());
+                gpanel.setSecondBody(physics.guessHost(gpanel.getObjectSelected()));
+            }
         }
     }
 

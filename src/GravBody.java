@@ -2,7 +2,7 @@ import java.awt.Color;
 
 public class GravBody {
 
-    public GravBody(double Velx, double Vely, double Locx, double Locy, double Mass, double Radius, boolean Fixed, Color colorInput){
+    public GravBody(double Velx, double Vely, double Locx, double Locy, double Mass, double Radius, boolean Fixed, Color colorInput, String nameInput){
         velx = Velx;
         vely = Vely;
         locx = Locx * 1000;
@@ -11,6 +11,7 @@ public class GravBody {
         radius = Radius * 1000;
         fixed = Fixed;
         color = colorInput;
+        name = nameInput;
     }
 
     public GravBody(GravBody body){
@@ -22,6 +23,7 @@ public class GravBody {
         radius = body.getRadius();
         fixed = body.getFixed();
         color = body.getColor();
+        name = body.getName();
     }
 
     //declares the variables of each GravBody
@@ -39,6 +41,8 @@ public class GravBody {
     double orbitalEnergy;
     
     boolean orbitCompleted = false;
+
+    String name;
 
     Color color;
 
@@ -70,6 +74,9 @@ public class GravBody {
     public void setColor(Color a){
         this.color = a;
     }
+    public void setName(String n){
+        this.name = n;
+    }
 
     public double getVelx(){
         return this.velx;
@@ -94,6 +101,9 @@ public class GravBody {
     }
     public double getOrbitalEnergy(){
         return this.orbitalEnergy;
+    }
+    public String getName(){
+        return this.name;
     }
     public Color getColor(){
         return this.color;
