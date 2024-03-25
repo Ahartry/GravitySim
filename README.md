@@ -6,6 +6,7 @@
 
 Future features will include:
 - Optimization of sorts
+- Bug fixes (Maybe)
 
 Features that have been added:
 - Adjustable speed
