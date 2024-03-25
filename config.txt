@@ -7,7 +7,7 @@
 #Starting zoom:
 1000000000
 
-#Celestial bodies Format: Velx (m/s) Vely (m/s) Posx (km) Posy (km) Mass (e21kg) Radius (km) Fixed(true/false) Color (r g b)
+#Celestial bodies Format: Velx (m/s) Vely (m/s) Posx (km) Posy (km) Mass (e21kg) Radius (km) Fixed(true/false) Color (r g b) Name
 0 0 0 0 1988500000 695700 true 255 255 0 Sun
 -58980 0 0 -46000000 330 2440 false 192 192 192 Mercury
 34790 0 0 108940000 4868 6052 false 255 165 0 Venus

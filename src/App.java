@@ -366,7 +366,18 @@ public class App {
         boolean firstCheckLoop = true;
 
         //starting config:
-        String configDefault = "#Tick speed:\n1000\n\n#Simulation speed:\n1000\n\n#Celestial bodies:\n#Format: Velx (m/s), Vely (m/s), Posx (km), Posy (km), Mass (e21kg), Radius (km), Fixed(true/false) Color (Color.INSERT_COLOR)\n0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW\n-58980, 0, 0, -46000000, 330, 2440, false, Color.LIGHT_GRAY\n34790, 0, 0, 108940000, 4868, 6052, false, Color.ORANGE\n0, 30290, -147100000, 0, 5972, 6372, false, Color.BLUE\n1022, 30290, -147100000, 405000, 73,1737, false, Color.GRAY\n0, -26500, 206650000, 0, 642,3389, false, Color.RED";
+        String configDefault = "#Tick speed:\n1000\n\n#Simulation speed:\n50000\n\n#Starting zoom:\n1000000000\n\n#Celestial bodies Format: Velx (m/s) "+
+        "Vely (m/s) Posx (km) Posy (km) Mass (e21kg) Radius (km) Fixed(true/false) Color (r g b) Name" +
+        "\n0 0 0 0 1988500000 695700 true 255 255 0 Sun" +
+        "\n-58980 0 0 -46000000 330 2440 false 192 192 192 Mercury" +
+        "\n34790 0 0 108940000 4868 6052 false 255 165 0 Venus" +
+        "\n0 30290 -147100000 0 5972 6372 false 0 0 255 Earth" +
+        "\n1022 30290 -147100000 405000 73 1737 false 128 128 128 Moon" +
+        "\n0 -26500 206650000 0 642 3389 false 255 0 0 Mars" +
+        "\n13720 0 0 740959000 1898130 69911 false 255 165 0 Jupiter" +
+        "\n-9140 0 0 -1506527000 568320 58232 false 255 255 0 Saturn" +
+        "\n0 7130 -2732696000 0 86811 25362 false 0 255 255 Uranus" +
+        "\n0 -5370 4558857000 0 102409 24622 false 0 0 255 Neptune";
 
         String currentDirectory = System.getProperty("user.dir");
 

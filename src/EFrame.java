@@ -261,48 +261,56 @@ public class EFrame extends JFrame{
 
         try{
             b.setLocx(Double.parseDouble(LocXField.getText()));
+            LocXField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             LocXField.setForeground(Color.RED);
         }
         try{
             b.setLocy(Double.parseDouble(LocYField.getText()));
+            LocYField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             LocYField.setForeground(Color.RED);
         }
         try{
             b.setVelx(Double.parseDouble(VelXField.getText()));
+            VelXField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             VelXField.setForeground(Color.RED);
         }
         try{
             b.setVely(Double.parseDouble(VelYField.getText()));
+            VelYField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             VelYField.setForeground(Color.RED);
         }
         try{
             b.setMass(Double.parseDouble(MassField.getText()));
+            MassField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             MassField.setForeground(Color.RED);
         }
         try{
             b.setRadius(Double.parseDouble(RadiusField.getText()));
+            RadiusField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             RadiusField.setForeground(Color.RED);
         }
         try{
             b.setName(NameField.getText());
+            NameField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             NameField.setForeground(Color.RED);
         }
         try{
             red = Integer.parseInt(rField.getText());
+            rField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             rField.setForeground(Color.RED);
@@ -310,6 +318,7 @@ public class EFrame extends JFrame{
         }
         try{
             green = Integer.parseInt(gField.getText());
+            gField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             gField.setForeground(Color.RED);
@@ -317,6 +326,7 @@ public class EFrame extends JFrame{
         }
         try{
             blue = Integer.parseInt(bField.getText());
+            bField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;
             bField.setForeground(Color.RED);
