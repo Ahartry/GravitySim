@@ -468,19 +468,25 @@ public class MPanel extends JPanel{
 
         @Override
         public void actionPerformed(ActionEvent arg0){
-            gpanel.setLagrange(!gpanel.getLagrange());
-            gpanel.setFirstLoopThing(true);
-            //System.out.println(gpanel.getLagrange());
-            if(gpanel.getSelected() && gpanel.getLagrange()){
+            
+            if(gpanel.getSelected()){
+                gpanel.setLagrange(!gpanel.getLagrange());
+                gpanel.setFirstLoopThing(true);
+                //System.out.println(gpanel.getLagrange());
+                // if(gpanel.getSelected() && gpanel.getLagrange()){
+                //     gpanel.clearApside();
+                //     gpanel.clearTrail();
+                // }
                 gpanel.clearApside();
                 gpanel.clearTrail();
+    
+                //lagrange or something
+                if(gpanel.getLagrange()){
+                    gpanel.setFirstBody(gpanel.getObjectSelected());
+                    gpanel.setSecondBody(physics.guessHost(gpanel.getObjectSelected()));
+                }
             }
 
-            //lagrange or something
-            if(gpanel.getLagrange()){
-                gpanel.setFirstBody(gpanel.getObjectSelected());
-                gpanel.setSecondBody(physics.guessHost(gpanel.getObjectSelected()));
-            }
         }
     }
 
@@ -495,7 +501,7 @@ public class MPanel extends JPanel{
                 output = output + "\n" + physics.getPhysicsList().get(i).getVelx() + " " + physics.getPhysicsList().get(i).getVely() + " " + physics.getPhysicsList().get(i).getLocx() / 1000
                 + " " + physics.getPhysicsList().get(i).getLocy() / 1000 + " " + physics.getPhysicsList().get(i).getMass() / 1000000 + " " + physics.getPhysicsList().get(i).getRadius() / 1000
                 + " " + physics.getPhysicsList().get(i).getFixed() + " " + physics.getPhysicsList().get(i).getColor().getRed() + " " + physics.getPhysicsList().get(i).getColor().getGreen()
-                + " " + physics.getPhysicsList().get(i).getColor().getBlue();
+                + " " + physics.getPhysicsList().get(i).getColor().getBlue() + " " + physics.getPhysicsList().get(i).getName();
             }
             //System.out.println(output);
             try {
@@ -524,6 +530,9 @@ public class MPanel extends JPanel{
         return zToggle;
     }
 
+    public ArrayList<EFrame> getEFrameList(){
+        return this.eframeList;
+    }
 }
 
 

@@ -11,15 +11,15 @@ public class Trail {
     }
 
     public Trail(Trail trail){
-        xCoord = trail.getxCoord();
-        yCoord = trail.getyCoord();
+        xCoord = trail.getX();
+        yCoord = trail.getY();
         index = trail.getIndex();
     }
 
-    public double getxCoord(){
+    public double getX(){
         return this.xCoord;
     }
-    public double getyCoord(){
+    public double getY(){
         return this.yCoord;
     }
     public int getIndex(){

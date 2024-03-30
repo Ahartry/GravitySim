@@ -2,16 +2,23 @@ import java.util.ArrayList;
 
 public class Physics {
 
-    private double velx;
-    private double vely;
+    private double velx1;
+    private double vely1;
+    private double velx2;
+    private double vely2;
     private double locx1;
     private double locy1;
     private double locx2;
     private double locy2;
+    private double mass1;
     private double mass2;
     private double hypSquared;
-    private double accelx;
-    private double accely;
+    private double accelx1;
+    private double accely1;
+    private double accelx2;
+    private double accely2;
+    private double forcex;
+    private double forcey;
     private double theta;
     private int signx = 1;
     private int signy = 1;
@@ -35,8 +42,11 @@ public class Physics {
     double timeDifference;
     int apsideLoopCount = 0;
     boolean reached = false;
+    private int selected;
+    private int selectedHost;
 
     ArrayList<GravBody> physicsList = new ArrayList<>();
+    ArrayList<Byte> byteList = new ArrayList<>();
     private GPanel gpanel;
     private long ticksPerFrame;
     private double leftover = 0;
@@ -50,12 +60,29 @@ public class Physics {
 
 
     public void tick(long delta){
+        long start = System.nanoTime();
+
         //acounts for the leftover time
         double f = (delta / (double) 16666666) + leftover;
         int loopTimes = (int) f;
         leftover = f - loopTimes;
 
+        //stuff for indexing objects
+        byteList.clear();
+        for(byte j = 0; j < physicsList.size(); j++){
+            byteList.add(j);
+            //System.out.println(j);
+        }
+
         if(!paused){
+
+            //maybe optimizations
+            if(gpanel.getSelected()){
+
+                selected = gpanel.getObjectSelected();
+                selectedHost = guessHost(selected);
+        
+            }
 
             for(int i = 0; i < (loopTimes * ticksPerFrame); i++){
                 //actualy physics part of loop
@@ -63,25 +90,31 @@ public class Physics {
                 //increments time
                 timePassed = timePassed + (double) ((double) physicsSpeed / (double) ticksPerFrame);
     
+                int listSize = byteList.size();
                 //iterates through each object of the list
-                for(int i1 = 0; i1 < physicsList.size(); i1++){
-    
+                for(int i1 = 0; i1 < listSize; i1++){
     
                     //each object interacts with each other object
-                    for(int i2 = 0; i2 < physicsList.size(); i2++){
+                    for(int i2 = 0; i2 < byteList.size(); i2++){
+
+                        int i2value = byteList.get(i2);
     
                         //makes sure that it does not check itself and give silly /0 error
-                        if(i1 != i2 && !physicsList.get(i1).getFixed()){
-    
-                            velx = physicsList.get(i1).getVelx();
-                            vely = physicsList.get(i1).getVely();
+                        if(i1 != i2value){
+
+                            //System.out.println(i1 + " " + i2value);
+
+                            velx1 = physicsList.get(i1).getVelx();
+                            vely1 = physicsList.get(i1).getVely();
                             locx1 = physicsList.get(i1).getLocx();
                             locy1 = physicsList.get(i1).getLocy();
-                            //double mass1 = physicsList.get(i1).getMass();
+                            mass1 = physicsList.get(i1).getMass();
     
-                            locx2 = physicsList.get(i2).getLocx();
-                            locy2 = physicsList.get(i2).getLocy();
-                            mass2 = physicsList.get(i2).getMass();
+                            velx2 = physicsList.get(i2value).getVelx();
+                            vely2 = physicsList.get(i2value).getVely();
+                            locx2 = physicsList.get(i2value).getLocx();
+                            locy2 = physicsList.get(i2value).getLocy();
+                            mass2 = physicsList.get(i2value).getMass();
     
                             hypSquared = (double) (locx1 - locx2) * (locx1 - locx2) + (double) (locy1 - locy2) * (locy1 - locy2);
                             theta = Math.atan(Math.abs(locy1 - locy2) / Math.abs(locx1 - locx2));
@@ -105,40 +138,43 @@ public class Physics {
     
                                 //removed 15 orders of magnitude from G to account for lower mass values
                                 //does the actual physics acceleration math
-                                accelx = (double) (Math.cos(theta) * (66743 * mass2 / (hypSquared))) * signx;
-                                accely = (double) (Math.sin(theta) * (66743 * mass2 / (hypSquared))) * signy;
+                                forcex = (double) (Math.cos(theta) * (66743 * mass2 * mass1 / (hypSquared))) * signx;
+                                forcey = (double) (Math.sin(theta) * (66743 * mass2 * mass1 / (hypSquared))) * signy;
+
+                                accelx1 = forcex / mass1;
+                                accely1 = forcey / mass1;
+                                accelx2 = -1 * forcex / mass2;
+                                accely2 = -1 * forcey / mass2;
+
+                                // System.out.println("\n" + getHyp(forcex, forcey));
+                                // System.out.println(66743 * physicsList.get(i2value).getMass() * physicsList.get(i1).getMass() / (Math.pow(getDistance(i1,i2value), 2)));
+
+                                physicsList.get(i1).setVelx(velx1 + (accelx1 * physicsSpeed));
+                                physicsList.get(i1).setVely(vely1 + (accely1 * physicsSpeed));
+
+                                physicsList.get(i2value).setVelx(velx2 + (accelx2 * physicsSpeed));
+                                physicsList.get(i2value).setVely(vely2 + (accely2 * physicsSpeed));
     
                             }
-    
-                            //applies the acceleration to the speed
-                            physicsList.get(i1).setVelx(velx + (accelx * (double) ((double) physicsSpeed / (double) ticksPerFrame)));
-                            physicsList.get(i1).setVely(vely + (accely * (double) ((double) physicsSpeed / (double) ticksPerFrame)));
-    
-                            velx = physicsList.get(i1).getVelx();
-                            vely = physicsList.get(i1).getVely();
-    
     
                         }
     
                     }
-                }
-                //iterates and applies the new velocity to the loc
-                for(int i1 = 0; i1 < physicsList.size(); i1++){
-                    if(physicsList.get(i1).getFixed()){
-    
-                    }else{
-                        physicsList.get(i1).setLocx(physicsList.get(i1).getLocx() + physicsList.get(i1).getVelx() * (double) ((double) physicsSpeed / (double) ticksPerFrame));
-                        physicsList.get(i1).setLocy(physicsList.get(i1).getLocy() + physicsList.get(i1).getVely() * (double) ((double) physicsSpeed / (double) ticksPerFrame));
+                    if(!physicsList.get(i1).getFixed()){
+                        physicsList.get(i1).setLocx(physicsList.get(i1).getLocx() + (physicsList.get(i1).getVelx() * physicsSpeed));
+                        physicsList.get(i1).setLocy(physicsList.get(i1).getLocy() + (physicsList.get(i1).getVely() * physicsSpeed));
                     }
-    
+
+                    byteList.remove(0);
+                    //System.out.println(i1);
                 }
 
                 //two body analysis
                 //important: First body is the one you want to get stats about. Second is the host. Should be reversed. Yes, I know
                 if(gpanel.getSelected()){
                     //if(!(gpanel.getObjectSelected() == guessHost(gpanel.getObjectSelected()))){
-                        distance = getDistance(gpanel.getObjectSelected(), guessHost(gpanel.getObjectSelected()));
-                        velocity = getVelocity(gpanel.getObjectSelected());
+                        distance = getDistance(selected, selectedHost);
+                        //velocity = getVelocity(gpanel.getObjectSelected());
         
                         if(distance > distance2){
                             ascending = true;
@@ -158,24 +194,8 @@ public class Physics {
                             }else{
                                 reached = true;
                                 distancePeri = distance;
-                                gpanel.getApsideList().add(new Apside(gpanel.rotateObjectX(physicsList.get(gpanel.getObjectSelected()), 0), gpanel.rotateObjectY(physicsList.get(gpanel.getObjectSelected()), 0), false, distance));
-                                //System.out.println("Periapsis Reached, altitude: " + distance);
+                                gpanel.newApside(false, distance);
                                 realTime = getTimePassed() - lastPeri;
-                                //System.out.println(gpanel.getObjectSelected() + "Peri: " + apsideLoopCount);
-                                //System.out.println("Time: " + realTime /* (60 * 60 * 24) */);
-            
-                                //finds the semi-major axis through black magic (This most likely does not work)
-                                // gm = 66743 * (physicsList.get(gpanel.getObjectSelected()).getMass() + physicsList.get(guessHost(gpanel.getObjectSelected())).getMass());
-                                //System.out.println(gm);
-                                //orbitalEnergy = (Math.pow(velocity, 2) / 2) - (gm / distance);
-                                //semimajorAxis = -1 * gm / (2 * orbitalEnergy);
-                                // semimajorAxis = (distanceApo + distancePeri) / 2;
-                                // System.out.println("Period: " + realTime + "s");
-                                // System.out.println("Semi-major axis: " + semimajorAxis + "m\n");
-                                // for(int j = 0; j < gpanel.getApsideList().size(); j++){
-                                //     System.out.println(gpanel.getApsideList().get(j).getX());
-                                // }
-                                
                                 lastPeri = getTimePassed();
                             }
 
@@ -188,9 +208,7 @@ public class Physics {
                             }else{
                                 reached = true;
                                 distanceApo = distance;
-                                gpanel.getApsideList().add(new Apside(physicsList.get(gpanel.getObjectSelected()).getLocx(), physicsList.get(gpanel.getObjectSelected()).getLocy(), true, distance));
-                                //System.out.println("Apoapsis Reached, altitude: " + distance);
-                                //System.out.println(gpanel.getObjectSelected() + "Apo: " + apsideLoopCount);
+                                gpanel.newApside(true, distance);
                                 realTime = getTimePassed() - lastApo;
                                 lastApo = getTimePassed();
                             }
@@ -203,13 +221,8 @@ public class Physics {
                             ascended = false;
                         }
         
-                        distance2 = getDistance(gpanel.getObjectSelected(), guessHost(gpanel.getObjectSelected()));
-                    //}
+                        distance2 = distance;
 
-                    // if(firstApsideLoop && reached){
-                    //     gpanel.getApsideList().remove(gpanel.getApsideList().size() - 1);
-                    //     firstApsideLoop = false;
-                    // }
                     apsideLoopCount++;
                     
                     reached = false;
@@ -222,6 +235,9 @@ public class Physics {
                 
             }
         }
+
+        //optimization benchmark thing
+        System.out.println("Time: " + (System.nanoTime() - start) / 1000 + " μs");
 
     }
 
@@ -287,6 +303,10 @@ public class Physics {
 
     public double getCentripedal(int i1){
         return 66743 * physicsList.get(guessHost(i1)).getMass() * physicsList.get(i1).getMass() / (Math.pow(getDistance(i1, guessHost(i1)), 2));   
+    }
+
+    public double getHyp(double i1, double i2){
+        return Math.sqrt(Math.pow(i1, 2) + Math.pow(i2, 2));
     }
 
     public int guessHost(int i1){

@@ -24,7 +24,7 @@ public class EFrame extends JFrame{
     GravBody b;
     GPanel g;
     ArrayList<EFrame> e;
-    int index;
+    //int index;
     int red;
     int green;
     int blue;
@@ -54,8 +54,8 @@ public class EFrame extends JFrame{
 
         this.okAction = new okAction();
 
-        index = e.size();
-        System.out.println(index);
+        //index = e.size();
+        //System.out.println(index);
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(500, 300);
@@ -223,11 +223,12 @@ public class EFrame extends JFrame{
         epanel.add(okButton, gbc);
 
         //grabs the values
-        UpdateBoxes(LocXField, LocYField, VelXField, VelYField, MassField, RadiusField,  NameField, rField, gField,  bField, FixedBox);
+        UpdateBoxes();
+        //LocXField, LocYField, VelXField, VelYField, MassField, RadiusField,  NameField, rField, gField,  bField, FixedBox
     }
 
-    public void UpdateBoxes(JTextField LocXField, JTextField LocYField, JTextField VelXField, JTextField VelYField,
-    JTextField MassField, JTextField RadiusField, JTextField NameField, JTextField rField, JTextField gField, JTextField bField, JCheckBox FixedBox){
+    //JTextField LocXField, JTextField LocYField, JTextField VelXField, JTextField VelYField, JTextField MassField, JTextField RadiusField, JTextField NameField, JTextField rField, JTextField gField, JTextField bField, JCheckBox FixedBox
+    public void UpdateBoxes(){
         if(b.getRadius() != 0){
             System.out.println("Loading selected data");
             //loads all the stuff
@@ -366,8 +367,9 @@ public class EFrame extends JFrame{
             p.setPaused(false);
             g.setJustPaused(true);
         }
-        e.remove(index);
+        e.remove(e.indexOf(this));
         dispose();
+        System.out.println(e.size());
 
     }
 

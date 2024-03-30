@@ -98,24 +98,6 @@ public class App {
         menuPanel.setPreferredSize(new Dimension(1200, 60));
         menuPanel.setBackground(new Color(150, 150, 150));
 
-        //mass is in e21kg, radius is km, velocity is m/s, loc is in km
-
-        //here is the solar system
-        // physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1988500000, 695700, true, Color.YELLOW)); //sun
-        // physicsSim.getPhysicsList().add(new GravBody(-58980, 0, 0, -46000000, 330, 2440, false, Color.LIGHT_GRAY)); //mercury
-        // physicsSim.getPhysicsList().add(new GravBody(34790, 0, 0, 108940000, 4868, 6052, false, Color.ORANGE)); //venus
-        // physicsSim.getPhysicsList().add(new GravBody(0, 30290, -147100000, 0, 5972, 6372, false, Color.BLUE)); //earth
-        // physicsSim.getPhysicsList().add(new GravBody(1022, 30290, -147100000, 405000, 73, 1737, false, Color.GRAY)); //moon
-        // physicsSim.getPhysicsList().add(new GravBody(0, -26500, 206650000, 0, 642, 3389, false, Color.RED)); //mars
-        // physicsSim.getPhysicsList().add(new GravBody(13720, 0, 0, 740959000, 1898130, 69911, false, Color.ORANGE)); //jupiter
-        // physicsSim.getPhysicsList().add(new GravBody(-9140, 0, 0, -1506527000, 568320, 58232, false, Color.YELLOW)); //saturn
-        // physicsSim.getPhysicsList().add(new GravBody(0, 7130, -2732696000d, 0, 86811, 25362, false, Color.CYAN)); //uranus
-        // physicsSim.getPhysicsList().add(new GravBody(0, -5370, 4558857000d, 0, 102409, 24622, false, Color.BLUE)); // neptune
-
-        //physicsSim.getPhysicsList().add(new GravBody(0, 0, 0, 0, 1000, 5000, true, Color.BLACK));
-        //physicsSim.getPhysicsList().add(new GravBody(0, 1155.94, 50000, 0, 35, 1000, false, Color.BLUE));
-        //physicsSim.getPhysicsList().add(new GravBody(-1001.0731888353193, 577.9703748420718, 25000.01621373392, 43301.26082821424, 0, 1000, false, Color.GREEN));
-
         //physics loop
         startNanoTime = System.nanoTime();
         while(true){
@@ -180,6 +162,13 @@ public class App {
             }else if(wasSelectedLastLoop){
                 wasSelectedLastLoop = false;
                 infoText.setText("");
+            }
+
+            //self-explanatory
+            if(!physicsSim.getPaused() && (menuPanel.getEFrameList().size() > 0)){
+                for(int i = 0; i < menuPanel.getEFrameList().size(); i++){
+                    menuPanel.getEFrameList().get(i).UpdateBoxes();
+                }
             }
 
             newNanoTime = System.nanoTime();
@@ -366,8 +355,11 @@ public class App {
         boolean firstCheckLoop = true;
 
         //starting config:
-        String configDefault = "#Tick speed:\n1000\n\n#Simulation speed:\n50000\n\n#Starting zoom:\n1000000000\n\n#Celestial bodies Format: Velx (m/s) "+
-        "Vely (m/s) Posx (km) Posy (km) Mass (e21kg) Radius (km) Fixed(true/false) Color (r g b) Name" +
+        String configDefault = 
+        "#Tick speed:\n1000\n\n" + 
+        "#Simulation speed:\n50000\n\n" + 
+        "#Starting zoom:\n1000000000\n\n" + 
+        "#Celestial bodies Format: Velx (m/s) Vely (m/s) Posx (km) Posy (km) Mass (e21kg) Radius (km) Fixed(true/false) Color (r g b) Name" +
         "\n0 0 0 0 1988500000 695700 true 255 255 0 Sun" +
         "\n-58980 0 0 -46000000 330 2440 false 192 192 192 Mercury" +
         "\n34790 0 0 108940000 4868 6052 false 255 165 0 Venus" +
@@ -443,6 +435,7 @@ public class App {
                 physicsSim.setSpeed(Integer.parseInt(lineOfText));
                 firstCheckLoop = false;
             }
+            System.out.println("Loaded speeds");
 
             //gets zoom
             while (scan.hasNext()) {
@@ -458,8 +451,8 @@ public class App {
                 gamePanel.setDefaultZoom(Double.parseDouble(lineOfText));
                 firstCheckLoop = false;
             }
+            System.out.println("Loaded zoom");
 
-            System.out.println("Loaded speeds");
             @SuppressWarnings("unused")
             String lineOfText = scan.nextLine();
 
@@ -467,9 +460,11 @@ public class App {
             while (scan.hasNext()) {
                 physicsSim.getPhysicsList().add(new GravBody(scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextBoolean(), new Color(scan.nextInt(), scan.nextInt(), scan.nextInt()), scan.next()));
             }
+            System.out.println("Loaded all celestial bodies");
     
         } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
+            System.out.println("Failed loading");
+            e1.printStackTrace();
         }
     }
 

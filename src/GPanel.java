@@ -100,23 +100,15 @@ public void scrollRectToVisible(Rectangle arg0) {
 
             //checks when to add new trail
             if(j > 10 && !physicsSim.getPaused() && !physicsSim.getPhysicsList().get(i).getFixed()){
-                if(lagrange && i != firstBody && i != secondBody){
-                    trailList.add(new Trail(rotateObjectX(physicsSim.getPhysicsList().get(i), 0), rotateObjectY(physicsSim.getPhysicsList().get(i), 0), i));
-                }else if(lagrange){
-                    //do nothing
-                }else{
-                    trailList.add(new Trail(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), i));
-                }
+                trailList.add(new Trail(
+                    rotateObjectX(physicsSim.getPhysicsList().get(i), 0), 
+                    rotateObjectY(physicsSim.getPhysicsList().get(i), 0), i));
                     
             //something about drawing first loop after pausing
             }else if(justPaused){
-                if(lagrange && i != firstBody && i != secondBody){
-                    trailList.add(new Trail(rotateObjectX(physicsSim.getPhysicsList().get(i), 0), rotateObjectY(physicsSim.getPhysicsList().get(i), 0), i));
-                }else if(lagrange){
-                    //do nothing
-                }else{
-                    trailList.add(new Trail(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), i));
-                }
+                trailList.add(new Trail(
+                    rotateObjectX(physicsSim.getPhysicsList().get(i), 0), 
+                    rotateObjectY(physicsSim.getPhysicsList().get(i), 0), i));
 
                 justPaused = false; 
             }
@@ -128,75 +120,48 @@ public void scrollRectToVisible(Rectangle arg0) {
                 setOffsety((int) (rotateObjectY(physicsSim.getPhysicsList().get(objectFocus), rotationalOffset) / zoom) * -1 + getYDimension() / 2);
             }
 
-            xdraw = (rotateX(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - radius) / zoom + (double) offsetx;
-            ydraw = (rotateY(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - radius) / zoom + (double) offsety;
+            xdraw = (rotateX(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - (radius * 2)) / zoom + (double) offsetx;
+            ydraw = (rotateY(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - (radius * 2)) / zoom + (double) offsety;
+
+            // xdraw = allTransformationsX(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy());
+            // ydraw = allTransformationsY(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy());
 
             //draws the bodies
             g.setColor(physicsSim.getPhysicsList().get(i).color);
             g.fillOval((int) xdraw, (int) ydraw, (int) ((radius * 2) /  zoom), (int) ((radius * 2) /  zoom));
 
             firstTrailLoop = true;
-            //draws the trail
-            if(trailDrawMode){
-                //does the lines
-                for(int index = 0; index < trailList.size(); index++){
-                    if(trailList.get(index).getIndex() == i){
-    
-                        if(lagrange){
-                            xdraw = rotateX(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset - lagrangeOffset) / zoom + offsetx;
-                            ydraw = rotateY(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset - lagrangeOffset) / zoom + offsety;
-                        }else{
-                            xdraw = rotateX(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsetx;
-                            ydraw = rotateY(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsety;
-                        }
-                        g.setColor(Color.RED);
+            for(int index = 0; index < trailList.size(); index++){
+                if(trailList.get(index).getIndex() == i){
+                    xdraw = allTransformationsX(trailList.get(index).getX(), trailList.get(index).getY());
+                    ydraw = allTransformationsY(trailList.get(index).getX(), trailList.get(index).getY());
+
+                    g.setColor(Color.RED);
                         
-                        //stops first loop shenanigans 
-                        if(firstTrailLoop){
-                            firstTrailLoop = false;
-                            xdraw2 = xdraw;
-                            ydraw2 = ydraw;
-                        }
-    
+                    //stops first loop shenanigans 
+                    if(firstTrailLoop){
+                        firstTrailLoop = false;
+                        xdraw2 = xdraw;
+                        ydraw2 = ydraw;
+                    }
+
+                    g.setColor(Color.RED);
+
+                    if(trailDrawMode){
                         g.drawLine((int) xdraw, (int) ydraw, (int) xdraw2, (int) ydraw2);
         
                         try{
-                            if(lagrange){
-                                xdraw2 = rotateX(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset - lagrangeOffset) / zoom + offsetx;
-                                ydraw2 = rotateY(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset - lagrangeOffset) / zoom + offsety;
-                            }else{
-                                xdraw2 = rotateX(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsetx;
-                                ydraw2 = rotateY(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsety;
-                            }
+                            xdraw2 = allTransformationsX(trailList.get(index).getX(), trailList.get(index).getY());
+                            ydraw2 = allTransformationsY(trailList.get(index).getX(), trailList.get(index).getY());
                         }catch (Exception e){
                             xdraw2 = xdraw;
                             ydraw2 = ydraw;
                         }
-    
-                        
-                    }
-    
-                }
-            }else{
-                //does the points
-                for(int index = 0; index < trailList.size(); index++){
-                    g.setColor(Color.RED);
-                    // xdraw = trailList.get(index).getxCoord() / zoom + offsetx;
-                    // ydraw = trailList.get(index).getyCoord() / zoom + offsety;
-
-                    if(lagrange){
-                        xdraw = rotateX(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset - lagrangeOffset) / zoom + offsetx;
-                        ydraw = rotateY(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset - lagrangeOffset) / zoom + offsety;
                     }else{
-                        xdraw = rotateX(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsetx;
-                        ydraw = rotateY(trailList.get(index).getxCoord(), trailList.get(index).getyCoord(), rotationalOffset) / zoom + offsety;
+                        g.drawLine((int) xdraw, (int) ydraw, (int) xdraw, (int) ydraw);
                     }
-
-                    g.drawLine((int) xdraw, (int) ydraw, (int) xdraw, (int) ydraw);
-    
                 }
             }
-
             //draws the apsides
             for(int index = 0; index < apsideList.size(); index++){
 
@@ -207,13 +172,8 @@ public void scrollRectToVisible(Rectangle arg0) {
                     // xdraw = apsideList.get(index).getX() / zoom + offsetx;
                     // ydraw = apsideList.get(index).getY() / zoom + offsety;
 
-                    if(lagrange){
-                        xdraw = rotateX(apsideList.get(index).getX(), apsideList.get(index).getY(), rotationalOffset - lagrangeOffset) / zoom + offsetx;
-                        ydraw = rotateY(apsideList.get(index).getX(), apsideList.get(index).getY(), rotationalOffset - lagrangeOffset) / zoom + offsety;
-                    }else{
-                        xdraw = rotateX(apsideList.get(index).getX(), apsideList.get(index).getY(), rotationalOffset) / zoom + offsetx;
-                        ydraw = rotateY(apsideList.get(index).getX(), apsideList.get(index).getY(), rotationalOffset) / zoom + offsety;
-                    }
+                    xdraw = allTransformationsX(apsideList.get(index).getX(), apsideList.get(index).getY());
+                    ydraw = allTransformationsY(apsideList.get(index).getX(), apsideList.get(index).getY());
     
                     //System.out.println(index);
     
@@ -397,17 +357,43 @@ public void scrollRectToVisible(Rectangle arg0) {
 
     public double rotateObjectX(GravBody input, double offset){
         double rads = offset + lagrangeOffset;
-        return (input.getLocx() * Math.cos(rads)) - (input.getLocy() * Math.sin(rads));
+        return ((input.getLocx() - input.getRadius()) * Math.cos(rads)) - ((input.getLocy() - input.getRadius()) * Math.sin(rads));
     }
 
     public double rotateObjectY(GravBody input, double offset){
         double rads = offset + lagrangeOffset;
-        return (input.getLocx() * Math.sin(rads)) + (input.getLocy() * Math.cos(rads));
+        return ((input.getLocx() - input.getRadius()) * Math.sin(rads)) + ((input.getLocy() - input.getRadius()) * Math.cos(rads));
     }
 
     public double rotateY(double posx, double posy, double offset){
         double rads = offset + lagrangeOffset;
         return (posx * Math.sin(rads)) + (posy * Math.cos(rads));
+    }
+
+    public double allTransformationsX(double posx, double posy){
+        if(lagrange){
+            return (rotateX(posx, posy, rotationalOffset - lagrangeOffset) / zoom) + offsetx;
+        }else{
+            return (rotateX(posx, posy, rotationalOffset) / zoom) + offsetx;
+        }
+        
+    }
+
+    public double allTransformationsY(double posx, double posy){
+        if(lagrange){
+            return (rotateY(posx, posy, rotationalOffset - lagrangeOffset) / zoom) + offsety;
+        }else{
+            return (rotateY(posx, posy, rotationalOffset) / zoom) + offsety;
+        }
+        
+    }
+
+    public void newApside(boolean apoInput, double distance){
+        double x;
+        double y;
+        x = rotateObjectX(physicsSim.getPhysicsList().get(getObjectSelected()), 0);
+        y = rotateObjectY(physicsSim.getPhysicsList().get(getObjectSelected()), 0);
+        apsideList.add(new Apside(x, y, apoInput, distance));
     }
 
     public void setRotationalOffset(double rads){
