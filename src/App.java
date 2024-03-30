@@ -352,6 +352,8 @@ public class App {
     public void checkFiles(){
         Scanner scan;
 
+        int lineReached = 0;
+
         boolean firstCheckLoop = true;
 
         //starting config:
@@ -412,6 +414,7 @@ public class App {
             //gets tick speed
             while (scan.hasNext()) {
                 String lineOfText = scan.nextLine();
+                lineReached++;
             
                 if(lineOfText.startsWith("#")) {
                     continue;
@@ -425,6 +428,7 @@ public class App {
             //gets speed
             while (scan.hasNext()) {
                 String lineOfText = scan.nextLine();
+                lineReached++;
             
                 if(lineOfText.startsWith("#")) {
                     continue;
@@ -440,6 +444,7 @@ public class App {
             //gets zoom
             while (scan.hasNext()) {
                 String lineOfText = scan.nextLine();
+                lineReached++;
             
                 if(lineOfText.startsWith("#")) {
                     continue;
@@ -455,16 +460,21 @@ public class App {
 
             @SuppressWarnings("unused")
             String lineOfText = scan.nextLine();
+            lineReached++;
 
             //adds the bodies
             while (scan.hasNext()) {
+                lineReached++;
                 physicsSim.getPhysicsList().add(new GravBody(scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextBoolean(), new Color(scan.nextInt(), scan.nextInt(), scan.nextInt()), scan.next()));
             }
             System.out.println("Loaded all celestial bodies");
     
-        } catch (FileNotFoundException e1) {
-            System.out.println("Failed loading");
+        } catch (Exception e1) {
+
+            //helpful messages hopefully
+            System.out.println("Error at config line " + lineReached);
             e1.printStackTrace();
+            System.exit(0);
         }
     }
 
