@@ -258,7 +258,7 @@ public class Physics {
         }
 
         //optimization benchmark thing
-        System.out.println("Time: " + (System.nanoTime() - start) / 1000 + " μs");
+        //System.out.println("Time: " + (System.nanoTime() - start) / 1000 + " μs");
 
     }
 

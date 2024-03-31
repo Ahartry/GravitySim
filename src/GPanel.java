@@ -267,8 +267,45 @@ public void scrollRectToVisible(Rectangle arg0) {
         return objectFocus;
     }
 
+    //stuff to make the new selected object in view
     public void setObjectSelected(int x){
         this.objectSelected = x;
+        double xmult = 1;
+        double ymult = 1;
+
+        double radius = physicsSim.getPhysicsList().get(x).getRadius();
+
+        xdraw = (rotateX(physicsSim.getPhysicsList().get(x).getLocx(), physicsSim.getPhysicsList().get(x).getLocy(), rotationalOffset) - (radius * 2)) / zoom + (double) offsetx;
+        ydraw = (rotateY(physicsSim.getPhysicsList().get(x).getLocx(), physicsSim.getPhysicsList().get(x).getLocy(), rotationalOffset) - (radius * 2)) / zoom + (double) offsety;
+
+        Rectangle r = frame.getBounds();
+        int h = r.height;
+        int w = r.width;
+
+        if(xdraw < w && xdraw > 0){
+            System.out.println("x: " + xdraw);
+        }else{
+            xmult = 1.5 * Math.abs(xdraw - (w / 2)) / (w / 2);
+            System.out.println(xmult);
+        }
+
+        if(ydraw < h && ydraw > 0){
+            System.out.println("y: " + ydraw);
+        }else{
+            ymult = 1.5 * Math.abs(ydraw - (h / 2)) / (h / 2);
+            System.out.println(ymult);
+        }
+
+        setZoom(getZoom() * getGreatest(xmult, ymult));
+        
+    }
+
+    public double getGreatest(double x, double y){
+        if(x > y){
+            return x;
+        }else{
+            return y;
+        }
     }
 
     public int getObjectSelected(){
