@@ -195,6 +195,7 @@ public void scrollRectToVisible(Rectangle arg0) {
         }
         if(selected){
             drawTransparentRing(g, physicsSim.getPhysicsList().get(objectSelected));
+            //System.out.println(physicsSim.getPhysicsList().get(objectSelected).getLocx());
             //System.out.println("Selected");
         }
 

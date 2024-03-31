@@ -258,6 +258,14 @@ public class EFrame extends JFrame{
         boolean error = false;
         if(b.getRadius() == 0){
             p.getPhysicsList().add(b);
+        }else{
+            int index = p.getPhysicsList().indexOf(b);
+            for(int i = 0; i < g.getTrailList().size(); i++){
+                if(g.getTrailList().get(i).getIndex() == index){
+                    g.getTrailList().remove(i);
+                }
+            }
+            g.getApsideList().clear();
         }
 
         try{
@@ -289,7 +297,11 @@ public class EFrame extends JFrame{
             VelYField.setForeground(Color.RED);
         }
         try{
-            b.setMass(Double.parseDouble(MassField.getText()));
+            if(MassField.getText().equals("0")){
+                b.setMass(0);
+            }else{
+                b.setMass(Double.parseDouble(MassField.getText()));
+            }
             MassField.setForeground(Color.BLACK);
         }catch (Exception e){
             error = true;

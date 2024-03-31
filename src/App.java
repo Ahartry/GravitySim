@@ -12,7 +12,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import javax.swing.JLabel;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -114,7 +113,25 @@ public class App {
             //text display checks
             if(!gamePanel.getShowControls() == showControls){
                 if(gamePanel.getShowControls()){
-                    controlText.setText("<html>Press '1' to hide controls<BR><BR>Pause/Play: SPACE<BR>New object: 'n'<BR>Edit object: 'e'<BR>Clear trails: 'c'<BR>Delete bodies: 'd'<BR>Refocus view: 'v'<BR>Focus on body: 'f'<BR>Save state: 's'<BR>Revert state: 'r'<BR>Cycle selection backwards: LEFT<BR>Cycle selection forwards: RIGHT<BR>Switch trail draw mode: 't'<BR>Increase speed: UP<BR>Decrease speed: DOWN<BR>Enable relative reference frame: 'l'<BR>Write system to file: 'w'</html>");
+                    controlText.setText("<html>Press '1' to hide controls<BR><BR>" + 
+                                        "Pause/Play: SPACE<BR>" +
+                                        "New object: 'n'<BR>" + 
+                                        "Edit object: 'e'<BR>" + 
+                                        "Clear trails: 'c'<BR>" + 
+                                        "Clear apsides: 'q'<BR>" + 
+                                        "Delete bodies: 'd'<BR>" + 
+                                        "Refocus view: 'v'<BR>" + 
+                                        "Focus on body: 'f'<BR>" + 
+                                        "Save state: 's'<BR>" + 
+                                        "Revert state: 'r'<BR>" + 
+                                        "Cycle selection backwards: LEFT<BR>" + 
+                                        "Cycle selection forwards: RIGHT<BR>" + 
+                                        "Switch trail draw mode: 't'<BR>" + 
+                                        "Increase speed: UP<BR>" + 
+                                        "Decrease speed: DOWN<BR>" + 
+                                        "Enable relative reference frame: 'l'<BR>" + 
+                                        "Write system to file: 'w'<BR>" + 
+                                        "Reset system to start: 'k'</html>");
                 }else{
                     controlText.setText("Press '1' to show controls");
                 }
@@ -467,7 +484,9 @@ public class App {
                 lineReached++;
                 physicsSim.getPhysicsList().add(new GravBody(scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextDouble(), scan.nextBoolean(), new Color(scan.nextInt(), scan.nextInt(), scan.nextInt()), scan.next()));
             }
-            System.out.println("Loaded all celestial bodies");
+            System.out.println("Loaded all celestial bodies (" + physicsSim.getPhysicsList().size() + ")");
+
+            physicsSim.updateStartingPhysicsList();
     
         } catch (Exception e1) {
 

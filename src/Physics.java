@@ -44,8 +44,10 @@ public class Physics {
     boolean reached = false;
     private int selected;
     private int selectedHost;
+    private String IHateThis;
 
     ArrayList<GravBody> physicsList = new ArrayList<>();
+    ArrayList<GravBody> startingPhysicsList = new ArrayList<>();
     ArrayList<Byte> byteList = new ArrayList<>();
     private GPanel gpanel;
     private long ticksPerFrame;
@@ -138,22 +140,41 @@ public class Physics {
     
                                 //removed 15 orders of magnitude from G to account for lower mass values
                                 //does the actual physics acceleration math
-                                forcex = (double) (Math.cos(theta) * (66743 * mass2 * mass1 / (hypSquared))) * signx;
-                                forcey = (double) (Math.sin(theta) * (66743 * mass2 * mass1 / (hypSquared))) * signy;
+                                if(mass1 == 0 && mass2 == 0){
+                                    accelx1 = 0;
+                                    accely1 = 0;
+                                    accelx2 = 0;
+                                    accely2 = 0;
+                                }else if(mass1 == 0){
+                                    accelx1 = (double) (Math.cos(theta) * (66743 * mass2 / (hypSquared))) * signx * -1;
+                                    accely1 = (double) (Math.sin(theta) * (66743 * mass2 / (hypSquared))) * signy * -1;
+                                    accelx2 = 0;
+                                    accely2 = 0;
+                                }else if(mass2 == 0){
+                                    accelx1 = 0;
+                                    accely1 = 0;
+                                    accelx2 = (double) (Math.cos(theta) * (66743 * mass1 / (hypSquared))) * signx * -1;
+                                    accely2 = (double) (Math.sin(theta) * (66743 * mass1 / (hypSquared))) * signy * -1;
+                                }else{
+                                    forcex = (double) (Math.cos(theta) * (66743 * mass2 * mass1 / (hypSquared))) * signx;
+                                    forcey = (double) (Math.sin(theta) * (66743 * mass2 * mass1 / (hypSquared))) * signy;
 
-                                accelx1 = forcex / mass1;
-                                accely1 = forcey / mass1;
-                                accelx2 = -1 * forcex / mass2;
-                                accely2 = -1 * forcey / mass2;
+                                    accelx1 = forcex / mass1;
+                                    accely1 = forcey / mass1;
+                                    accelx2 = -1 * forcex / mass2;
+                                    accely2 = -1 * forcey / mass2;
+                                }
 
                                 // System.out.println("\n" + getHyp(forcex, forcey));
                                 // System.out.println(66743 * physicsList.get(i2value).getMass() * physicsList.get(i1).getMass() / (Math.pow(getDistance(i1,i2value), 2)));
-
-                                physicsList.get(i1).setVelx(velx1 + (accelx1 * physicsSpeed));
-                                physicsList.get(i1).setVely(vely1 + (accely1 * physicsSpeed));
-
-                                physicsList.get(i2value).setVelx(velx2 + (accelx2 * physicsSpeed));
-                                physicsList.get(i2value).setVely(vely2 + (accely2 * physicsSpeed));
+                                if(!physicsList.get(i1).getFixed()){
+                                    physicsList.get(i1).setVelx(velx1 + (accelx1 * physicsSpeed));
+                                    physicsList.get(i1).setVely(vely1 + (accely1 * physicsSpeed));
+                                }
+                                if(!physicsList.get(i2value).getFixed()){
+                                    physicsList.get(i2value).setVelx(velx2 + (accelx2 * physicsSpeed));
+                                    physicsList.get(i2value).setVely(vely2 + (accely2 * physicsSpeed));
+                                }
     
                             }
     
@@ -186,7 +207,7 @@ public class Physics {
                         if(ascending && !ascended && apsideLoopCount > 5){
 
                             //This is a horror story. This print statement alters the functionality of the program. 
-                            System.out.println(gpanel.getObjectSelected() + " Peri: " + apsideLoopCount);
+                            IHateThis = gpanel.getObjectSelected() + " Peri: " + apsideLoopCount;
                             //System.out.println(gpanel.getObjectSelected() + " Peri: " + apsideLoopCount);
                             //stupid check
                             if(apsideLoopCount == 0 || apsideLoopCount == 1){
@@ -201,7 +222,7 @@ public class Physics {
 
                         }else if(!ascending && ascended && apsideLoopCount > 5){
 
-                            System.out.println(gpanel.getObjectSelected() + " Apo: " + apsideLoopCount);
+                            IHateThis = gpanel.getObjectSelected() + " Apo: " + apsideLoopCount;
                             //stupid check
                             if(apsideLoopCount == 0 || apsideLoopCount == 1){
                                 System.out.println("Program is stupid");
@@ -307,6 +328,16 @@ public class Physics {
 
     public double getHyp(double i1, double i2){
         return Math.sqrt(Math.pow(i1, 2) + Math.pow(i2, 2));
+    }
+
+    public void updateStartingPhysicsList(){
+        for(int i = 0; i < physicsList.size(); i++){
+            startingPhysicsList.add(new GravBody(physicsList.get(i)));
+        }
+    }
+
+    public ArrayList<GravBody> getStartingPhysicsList(){
+        return this.startingPhysicsList;
     }
 
     public int guessHost(int i1){

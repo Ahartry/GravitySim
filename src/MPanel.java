@@ -6,10 +6,13 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -38,6 +41,7 @@ public class MPanel extends JPanel{
     Action zToggleAction;
     Action lagrangeAction;
     Action saveSystemAction;
+    Action resetAction;
 
     GButton newButton;
     GButton editButton;
@@ -86,6 +90,7 @@ public class MPanel extends JPanel{
         this.zToggleAction = new zToggleAction();
         this.lagrangeAction = new lagrangeAction();
         this.saveSystemAction = new saveSystemAction();
+        this.resetAction = new resetAction();
 
         //adds the buttons
         this.newButton = new GButton("New");
@@ -152,6 +157,9 @@ public class MPanel extends JPanel{
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('w'), "saveSystemAction");
         this.getActionMap().put("saveSystemAction", saveSystemAction);
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('k'), "resetAction");
+        this.getActionMap().put("resetAction", resetAction);
 
         //sets up the buttons
         newButton.addActionListener(new newAction());
@@ -327,7 +335,24 @@ public class MPanel extends JPanel{
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            physics.getPhysicsList().clear();
+            int index = gpanel.getObjectSelected();
+            if(gpanel.getSelected()){
+                physics.getPhysicsList().remove(index);
+
+                for(int i = 0; i < gpanel.getTrailList().size(); i++){
+                    int trailIndex = gpanel.getTrailList().get(i).getIndex();
+                    if(trailIndex == index){
+                        gpanel.getTrailList().remove(i);
+                        i--;
+                    }else if(trailIndex > index){
+                        gpanel.getTrailList().get(i).setIndex(--trailIndex);
+                    }
+                    //System.out.println(i);
+                }
+            }
+            gpanel.getApsideList().clear();
+            gpanel.setSelected(false);
+            
         }
         
     }
@@ -427,7 +452,7 @@ public class MPanel extends JPanel{
 
         @Override
         public void actionPerformed(ActionEvent arg0){
-            gpanel.getApsideList().remove(0);
+            gpanel.getApsideList().clear();
         }
     }
 
@@ -503,12 +528,33 @@ public class MPanel extends JPanel{
                 + " " + physics.getPhysicsList().get(i).getFixed() + " " + physics.getPhysicsList().get(i).getColor().getRed() + " " + physics.getPhysicsList().get(i).getColor().getGreen()
                 + " " + physics.getPhysicsList().get(i).getColor().getBlue() + " " + physics.getPhysicsList().get(i).getName();
             }
-            //System.out.println(output);
+
+            output = output.trim();
+            List<String> lines = Arrays.asList(output.split("\\r?\\n"));
+
+            System.out.println(lines);
             try {
-                Files.write(path, output.getBytes(), StandardOpenOption.CREATE);
+
+                //thanks chatgpt
+                Files.write(path, lines, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+                //Files.write(path, lines, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public class resetAction extends AbstractAction{
+
+        @Override
+        public void actionPerformed(ActionEvent arg0){
+            gpanel.clearApside();
+            gpanel.clearTrail();
+            physics.getPhysicsList().clear();
+            
+            for(int i = 0; i < physics.getStartingPhysicsList().size(); i++){
+                physics.getPhysicsList().add(new GravBody(physics.getStartingPhysicsList().get(i)));
             }
         }
     }

@@ -25,4 +25,7 @@ public class Trail {
     public int getIndex(){
         return this.index;
     }
+    public void setIndex(int x){
+        this.index = x;
+    }
 }
