@@ -21,8 +21,10 @@ Features that have been added:
 # Running the program
 Download the GravitySim.jar file. This program can be run by double-clicking the downloaded file, or by running `java -jar GravitySim.jar` from the folder it is located. This file was compiled using JDK-17, meaning that you will need this version or newer to run this file. Upon startup, a file called config.txt will be created. This can be edited to change startup values, and deleting it will cause the program to regenerate a new one, in the case of an error.
 
+
 ## Compiling the program
 If you have an older version of Java installed, you can compile this on your own machine. Simply navigate in the terminal/console to the src folder of the downloaded zip, and run `javac Start.java`. Simply run `java Start` afterwards to run the program
+
 
 
 # How is the program actually used
