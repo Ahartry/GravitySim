@@ -283,20 +283,22 @@ public void scrollRectToVisible(Rectangle arg0) {
         int w = r.width;
 
         if(xdraw < w && xdraw > 0){
-            System.out.println("x: " + xdraw);
+            //System.out.println("x: " + xdraw);
         }else{
             xmult = 1.5 * Math.abs(xdraw - (w / 2)) / (w / 2);
-            System.out.println(xmult);
+            //System.out.println(xmult);
         }
 
         if(ydraw < h && ydraw > 0){
-            System.out.println("y: " + ydraw);
+            //System.out.println("y: " + ydraw);
         }else{
             ymult = 1.5 * Math.abs(ydraw - (h / 2)) / (h / 2);
-            System.out.println(ymult);
+            //System.out.println(ymult);
         }
 
         setZoom(getZoom() * getGreatest(xmult, ymult));
+
+        physicsSim.enableFirstApside();
         
     }
 

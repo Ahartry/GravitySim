@@ -552,10 +552,13 @@ public class MPanel extends JPanel{
             gpanel.clearApside();
             gpanel.clearTrail();
             physics.getPhysicsList().clear();
+            gpanel.setSelected(false);
             
             for(int i = 0; i < physics.getStartingPhysicsList().size(); i++){
                 physics.getPhysicsList().add(new GravBody(physics.getStartingPhysicsList().get(i)));
             }
+
+            gpanel.setObjectSelected(0);
         }
     }
 

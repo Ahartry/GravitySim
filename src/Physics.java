@@ -44,7 +44,6 @@ public class Physics {
     boolean reached = false;
     private int selected;
     private int selectedHost;
-    private String IHateThis;
 
     ArrayList<GravBody> physicsList = new ArrayList<>();
     ArrayList<GravBody> startingPhysicsList = new ArrayList<>();
@@ -62,9 +61,9 @@ public class Physics {
 
 
     public void tick(long delta){
-        long start = System.nanoTime();
+        //long start = System.nanoTime();
 
-        //acounts for the leftover time
+        //accounts for the leftover time
         double f = (delta / (double) 16666666) + leftover;
         int loopTimes = (int) f;
         leftover = f - loopTimes;
@@ -193,9 +192,7 @@ public class Physics {
                 //two body analysis
                 //important: First body is the one you want to get stats about. Second is the host. Should be reversed. Yes, I know
                 if(gpanel.getSelected()){
-                    //if(!(gpanel.getObjectSelected() == guessHost(gpanel.getObjectSelected()))){
                         distance = getDistance(selected, selectedHost);
-                        //velocity = getVelocity(gpanel.getObjectSelected());
         
                         if(distance > distance2){
                             ascending = true;
@@ -204,35 +201,24 @@ public class Physics {
                         }
         
                         //does the stuff
-                        if(ascending && !ascended && apsideLoopCount > 5){
+                        // && apsideLoopCount > ticksPerFrame
+                        if(ascending && !ascended){
 
-                            //This is a horror story. This print statement alters the functionality of the program. 
-                            IHateThis = gpanel.getObjectSelected() + " Peri: " + apsideLoopCount;
-                            //System.out.println(gpanel.getObjectSelected() + " Peri: " + apsideLoopCount);
-                            //stupid check
-                            if(apsideLoopCount == 0 || apsideLoopCount == 1){
-                                System.out.println("Program is stupid");
-                            }else{
-                                reached = true;
-                                distancePeri = distance;
-                                gpanel.newApside(false, distance);
-                                realTime = getTimePassed() - lastPeri;
-                                lastPeri = getTimePassed();
-                            }
+                            //System.out.println(apsideLoopCount);
+                            reached = true;
+                            distancePeri = distance;
+                            gpanel.newApside(false, distance);
+                            realTime = getTimePassed() - lastPeri;
+                            lastPeri = getTimePassed();
 
-                        }else if(!ascending && ascended && apsideLoopCount > 5){
+                        // && apsideLoopCount > ticksPerFrame
+                        }else if(!ascending && ascended){
 
-                            IHateThis = gpanel.getObjectSelected() + " Apo: " + apsideLoopCount;
-                            //stupid check
-                            if(apsideLoopCount == 0 || apsideLoopCount == 1){
-                                System.out.println("Program is stupid");
-                            }else{
-                                reached = true;
-                                distanceApo = distance;
-                                gpanel.newApside(true, distance);
-                                realTime = getTimePassed() - lastApo;
-                                lastApo = getTimePassed();
-                            }
+                            reached = true;
+                            distanceApo = distance;
+                            gpanel.newApside(true, distance);
+                            realTime = getTimePassed() - lastApo;
+                            lastApo = getTimePassed();
 
                         }
         
@@ -251,11 +237,14 @@ public class Physics {
 
                 }else{
                     gpanel.getApsideList().clear();
+                    apsideLoopCount = 0;
                 }
                 
                 
             }
         }
+
+        //System.out.println(ascending);
 
         //optimization benchmark thing
         //System.out.println("Time: " + (System.nanoTime() - start) / 1000 + " μs");

@@ -171,8 +171,15 @@ public class App {
                     //infoPeriod = NumberFormat.getIntegerInstance().format(physicsSim.getRealTime()) + " s";
                     infoPeriod = formatPeriod(physicsSim.getRealTime());
                 }
-                String c = NumberFormat.getIntegerInstance().format(infoCentripedal);
-                String d = NumberFormat.getIntegerInstance().format(infoDistance);
+
+                String c = "Undetermined";
+                String d = "Undetermined";
+
+                if(!physicsSim.getPhysicsList().get(i).getFixed()){
+                    c = NumberFormat.getIntegerInstance().format(infoCentripedal);
+                    d = NumberFormat.getIntegerInstance().format(infoDistance);
+                }
+
                 infoText.setText("<html>............................................................<BR><html>" + physicsSim.getPhysicsList().get(i).getName() + "<html> information:<BR>Velocity: <html>" + infoVelocity + " m/s" + "<html><BR>Distance: <html>" + d + " km" + "<html><BR>Centripedal force: <html>" + c + " N" + "<html><BR>Apoapsis: <html>" + infoApo + "<html><BR>Periapsis: <html>" + infoPeri + "<html><BR>Period: <html>" + infoPeriod);
                 wasSelectedLastLoop = true;
 
@@ -201,8 +208,6 @@ public class App {
         
         
     }
-
-    
 
     public static void wait(int nanos)
 	{
