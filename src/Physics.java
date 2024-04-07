@@ -191,44 +191,54 @@ public class Physics {
 
                 //two body analysis
                 //important: First body is the one you want to get stats about. Second is the host. Should be reversed. Yes, I know
-                if(gpanel.getSelected()){
-                        distance = getDistance(selected, selectedHost);
-        
-                        if(distance > distance2){
-                            ascending = true;
-                        }else if(distance < distance2){
-                            ascending = false;
-                        }
-        
-                        //does the stuff
-                        // && apsideLoopCount > ticksPerFrame
-                        if(ascending && !ascended){
+                if(gpanel.getSelected() && !gpanel.getLagrange()){
+                    distance = getDistance(selected, selectedHost);
+    
+                    if(distance > distance2){
+                        ascending = true;
+                    }else if(distance < distance2){
+                        ascending = false;
+                    }
 
-                            //System.out.println(apsideLoopCount);
-                            reached = true;
-                            distancePeri = distance;
-                            gpanel.newApside(false, distance);
-                            realTime = getTimePassed() - lastPeri;
-                            lastPeri = getTimePassed();
+                    //silly thing
+                    if(apsideLoopCount < ticksPerFrame + 1){
+                        ascended = ascending;
+                    }
 
-                        // && apsideLoopCount > ticksPerFrame
-                        }else if(!ascending && ascended){
+                    //overflow catch
+                    if(apsideLoopCount < 0){
+                        apsideLoopCount = (int) ticksPerFrame + 1;
+                    }
+    
+                    //does the stuff
+                    // && apsideLoopCount > ticksPerFrame
+                    if(ascending && !ascended){
 
-                            reached = true;
-                            distanceApo = distance;
-                            gpanel.newApside(true, distance);
-                            realTime = getTimePassed() - lastApo;
-                            lastApo = getTimePassed();
+                        System.out.println(apsideLoopCount);
+                        reached = true;
+                        distancePeri = distance;
+                        gpanel.newApside(false, distance);
+                        realTime = getTimePassed() - lastPeri;
+                        lastPeri = getTimePassed();
 
-                        }
-        
-                        if(ascending){
-                            ascended = true;
-                        }else{
-                            ascended = false;
-                        }
-        
-                        distance2 = distance;
+                    // && apsideLoopCount > ticksPerFrame
+                    }else if(!ascending && ascended){
+
+                        reached = true;
+                        distanceApo = distance;
+                        gpanel.newApside(true, distance);
+                        realTime = getTimePassed() - lastApo;
+                        lastApo = getTimePassed();
+
+                    }
+    
+                    if(ascending){
+                        ascended = true;
+                    }else{
+                        ascended = false;
+                    }
+    
+                    distance2 = distance;
 
                     apsideLoopCount++;
                     
@@ -297,6 +307,10 @@ public class Physics {
 
     public void enableFirstApside(){
         apsideLoopCount = 0;
+    }
+
+    public int getApsideLoopCount(){
+        return apsideLoopCount;
     }
 
     public double getRealTime(){

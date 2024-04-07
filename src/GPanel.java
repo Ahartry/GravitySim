@@ -32,7 +32,6 @@ public void scrollRectToVisible(Rectangle arg0) {
     int offsety;
     double zoom = 1000;
     double defaultZoom;
-    int j = 0;
     int trailLimit = 1000000;
     JFrame frame;
     int objectFocus = 0;
@@ -88,8 +87,7 @@ public void scrollRectToVisible(Rectangle arg0) {
         }else{
             lagrangeOffset = 0;
         }
-        //System.out.println(Math.atan2((physicsSim.getPhysicsList().get(firstBody).getLocy() - physicsSim.getPhysicsList().get(secondBody).getLocy()), (physicsSim.getPhysicsList().get(firstBody).getLocx() - physicsSim.getPhysicsList().get(secondBody).getLocx())));
-        //System.out.println(firstBody + ", " + secondBody);
+
         //iterates through all the objects to draw them
         for(int i = 0; i < physicsSim.getPhysicsList().size(); i++){
 
@@ -99,29 +97,32 @@ public void scrollRectToVisible(Rectangle arg0) {
             g.setColor(physicsSim.getPhysicsList().get(i).color);
 
             //checks when to add new trail
-            if(j > 10 && !physicsSim.getPaused() && !physicsSim.getPhysicsList().get(i).getFixed()){
-                trailList.add(new Trail(
-                    rotateObjectX(physicsSim.getPhysicsList().get(i), 0), 
-                    rotateObjectY(physicsSim.getPhysicsList().get(i), 0), i));
-                    
+            if(!physicsSim.getPaused() && (!physicsSim.getPhysicsList().get(i).getFixed() || (physicsSim.getPhysicsList().get(i).getFixed() && lagrange))){
+
+                double x = physicsSim.getPhysicsList().get(i).getLocx();
+                double y = physicsSim.getPhysicsList().get(i).getLocy();
+                trailList.add(new Trail(rotateX(x, y, 0), rotateY(x, y, 0), i));
+
             //something about drawing first loop after pausing
             }else if(justPaused){
-                trailList.add(new Trail(
-                    rotateObjectX(physicsSim.getPhysicsList().get(i), 0), 
-                    rotateObjectY(physicsSim.getPhysicsList().get(i), 0), i));
+
+                double x = physicsSim.getPhysicsList().get(i).getLocx();
+                double y = physicsSim.getPhysicsList().get(i).getLocy();
+                trailList.add(new Trail(rotateX(x, y, 0), rotateY(x, y, 0), i));
 
                 justPaused = false; 
             }
-            j++;
 
             //I have NO IDEA why it needs to multiply by -1, but it does
             if(focused){
-                setOffsetx((int) (rotateObjectX(physicsSim.getPhysicsList().get(objectFocus), rotationalOffset) / zoom) * -1 + getXDimension() / 2);
-                setOffsety((int) (rotateObjectY(physicsSim.getPhysicsList().get(objectFocus), rotationalOffset) / zoom) * -1 + getYDimension() / 2);
+                double x = physicsSim.getPhysicsList().get(objectFocus).getLocx();
+                double y = physicsSim.getPhysicsList().get(objectFocus).getLocy();
+                setOffsetx((int) (rotateX(x, y, 0) / zoom) * -1 + getXDimension() / 2);
+                setOffsety((int) (rotateY(x, y, 0) / zoom) * -1 + getYDimension() / 2);
             }
 
-            xdraw = (rotateX(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - (radius * 2)) / zoom + (double) offsetx;
-            ydraw = (rotateY(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - (radius * 2)) / zoom + (double) offsety;
+            xdraw = (rotateX(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - (radius)) / zoom + (double) offsetx;
+            ydraw = (rotateY(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy(), rotationalOffset) - (radius)) / zoom + (double) offsety;
 
             // xdraw = allTransformationsX(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy());
             // ydraw = allTransformationsY(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy());
@@ -169,8 +170,6 @@ public void scrollRectToVisible(Rectangle arg0) {
                 if(apsideList.size() == 0){
                     System.out.println("Program is stupid");
                 }else{
-                    // xdraw = apsideList.get(index).getX() / zoom + offsetx;
-                    // ydraw = apsideList.get(index).getY() / zoom + offsety;
 
                     xdraw = allTransformationsX(apsideList.get(index).getX(), apsideList.get(index).getY());
                     ydraw = allTransformationsY(apsideList.get(index).getX(), apsideList.get(index).getY());
@@ -190,13 +189,9 @@ public void scrollRectToVisible(Rectangle arg0) {
                 }
             }
 
-            //Two body analytics
-            //twoBodyAnalysis();
         }
         if(selected){
             drawTransparentRing(g, physicsSim.getPhysicsList().get(objectSelected));
-            //System.out.println(physicsSim.getPhysicsList().get(objectSelected).getLocx());
-            //System.out.println("Selected");
         }
 
     }
@@ -395,6 +390,8 @@ public void scrollRectToVisible(Rectangle arg0) {
         return (posx * Math.cos(rads)) - (posy * Math.sin(rads));
     }
 
+    //do NOT use these methods, they don't work
+
     public double rotateObjectX(GravBody input, double offset){
         double rads = offset + lagrangeOffset;
         return ((input.getLocx() - input.getRadius()) * Math.cos(rads)) - ((input.getLocy() - input.getRadius()) * Math.sin(rads));
@@ -404,6 +401,8 @@ public void scrollRectToVisible(Rectangle arg0) {
         double rads = offset + lagrangeOffset;
         return ((input.getLocx() - input.getRadius()) * Math.sin(rads)) + ((input.getLocy() - input.getRadius()) * Math.cos(rads));
     }
+
+    //
 
     public double rotateY(double posx, double posy, double offset){
         double rads = offset + lagrangeOffset;
@@ -429,10 +428,11 @@ public void scrollRectToVisible(Rectangle arg0) {
     }
 
     public void newApside(boolean apoInput, double distance){
-        double x;
-        double y;
-        x = rotateObjectX(physicsSim.getPhysicsList().get(getObjectSelected()), 0);
-        y = rotateObjectY(physicsSim.getPhysicsList().get(getObjectSelected()), 0);
+        double x = physicsSim.getPhysicsList().get(getObjectSelected()).getLocx();
+        double y = physicsSim.getPhysicsList().get(getObjectSelected()).getLocy();
+        
+        x = rotateX(x, y, 0);
+        y = rotateY(x, y, 0);
         apsideList.add(new Apside(x, y, apoInput, distance));
     }
 
@@ -476,8 +476,12 @@ public void scrollRectToVisible(Rectangle arg0) {
     private void drawTransparentRing(Graphics g1, GravBody b) {
 
         Graphics2D g = (Graphics2D) g1;
-        int centerX = (int) (rotateObjectX(b, rotationalOffset) / getZoom() + getOffsetx());
-        int centerY = (int) (rotateObjectY(b, rotationalOffset) / getZoom() + getOffsety());
+
+        int centerX = (int) ((rotateX(b.getLocx(), b.getLocy(), rotationalOffset)) / zoom + (double) getOffsetx());
+        int centerY = (int) ((rotateY(b.getLocx(), b.getLocy(), rotationalOffset)) / zoom + (double) getOffsety());
+
+        // int centerX = (int) (rotateObjectX(b, rotationalOffset) / getZoom() + getOffsetx());
+        // int centerY = (int) (rotateObjectY(b, rotationalOffset) / getZoom() + getOffsety());
         int ringWidth = 1; // Adjust the ring width as needed
 
         int outerRadius = (int) (b.getRadius() / zoom + 10);

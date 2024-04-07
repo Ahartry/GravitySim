@@ -282,6 +282,9 @@ public class App {
                 for(int i = 0; i < physicsSim.getPhysicsList().size(); i++){
                     double locx = gamePanel.rotateObjectX(physicsSim.getPhysicsList().get(i), gamePanel.getRotationalOffset()) / gamePanel.getZoom() + gamePanel.getOffsetx();
                     double locy = gamePanel.rotateObjectY(physicsSim.getPhysicsList().get(i), gamePanel.getRotationalOffset()) / gamePanel.getZoom() + gamePanel.getOffsety();
+
+                    locx = gamePanel.allTransformationsX(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy());
+                    locy = gamePanel.allTransformationsY(physicsSim.getPhysicsList().get(i).getLocx(), physicsSim.getPhysicsList().get(i).getLocy());
                     int radius = (int) Math.sqrt(Math.pow(locx - e.getX(), 2) + Math.pow(locy - e.getY(), 2));
 
                     if(radius < physicsSim.getPhysicsList().get(i).getRadius() / gamePanel.getZoom()){
